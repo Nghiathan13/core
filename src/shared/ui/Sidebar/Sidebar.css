@@ -6,4 +6,6 @@
   width: var(--sidebar-width);
   display: flex;
   flex-direction: column;
+  background: var(--surface);
+  border-right: var(--border-width) solid var(--border);
 }
