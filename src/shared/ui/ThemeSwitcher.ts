@@ -1,5 +1,5 @@
-import { getThemeMode, setThemeMode } from "@/shared/lib";
-import type { ThemeMode } from "@/shared/lib";
+import { getThemeMode, setThemeMode } from "../lib";
+import type { ThemeMode } from "../lib";
 import "./ThemeSwitcher.css";
 
 const MODES: ThemeMode[] = ["system", "light", "dark"];

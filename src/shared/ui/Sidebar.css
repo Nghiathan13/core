@@ -1,0 +1,20 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar__button {
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
+  border: var(--border-width) solid var(--color-button-border);
+  cursor: pointer;
+}
+
+.sidebar__button:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+}

@@ -1,1 +1,2 @@
-export { PageNav } from "./PageNav";
+export { Sidebar } from "./Sidebar";
+export { ThemeSwitcher } from "./ThemeSwitcher";

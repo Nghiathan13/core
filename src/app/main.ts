@@ -1,10 +1,10 @@
 import { initTheme } from "@/shared/lib";
-import { PageNav } from "@/shared/ui";
+import { Sidebar } from "@/shared/ui";
 import { initRouter } from "./router";
 
 initTheme();
 
-document.body.prepend(PageNav());
+document.body.prepend(Sidebar());
 
 const outlet = document.querySelector<HTMLElement>("main");
 
