@@ -1,12 +1,21 @@
 import { defineConfig } from "vite";
 // @ts-expect-error type error without @types/node package
+import path from "node:path";
+// @ts-expect-error type error without @types/node package
+import { fileURLToPath } from "node:url";
+// @ts-expect-error type error without @types/node package
 import process from "node:process";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(() => ({
   resolve: {
-    tsconfigPaths: true,
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
   },
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
