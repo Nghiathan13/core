@@ -1,4 +1,5 @@
 import { DashboardPage } from "@/pages/dashboard";
+import { TestPage } from "@/pages/test";
 
 type PageRenderer = () => HTMLElement;
 
@@ -10,6 +11,7 @@ interface Route {
 const routes: Route[] = [
   { path: "/", render: DashboardPage },
   { path: "/dashboard", render: DashboardPage },
+  { path: "/test", render: TestPage },
 ];
 
 function getCurrentPath(): string {

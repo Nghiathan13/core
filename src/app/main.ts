@@ -1,7 +1,10 @@
+import { initTheme } from "@/shared/lib";
+import { PageNav } from "@/shared/ui";
 import { initRouter } from "./router";
-import { initTheme } from "./theme/theme";
 
 initTheme();
+
+document.body.prepend(PageNav());
 
 const outlet = document.querySelector<HTMLElement>("main");
 

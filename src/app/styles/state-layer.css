@@ -1,0 +1,24 @@
+.state-layer {
+  position: relative;
+}
+
+.state-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentcolor;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.state-layer:hover::after {
+  opacity: var(--state-hover);
+}
+
+.state-layer:focus-visible::after {
+  opacity: var(--state-focus);
+}
+
+.state-layer:active::after {
+  opacity: var(--state-press);
+}

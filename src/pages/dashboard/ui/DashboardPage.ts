@@ -1,7 +1,12 @@
+import { ThemeSwitcher } from "./ThemeSwitcher";
+
 export function DashboardPage(): HTMLElement {
   const section = document.createElement("section");
 
-  section.innerHTML = `<h1>dashboard</h1>`;
+  const heading = document.createElement("h1");
+  heading.textContent = "dashboard";
+
+  section.append(heading, ThemeSwitcher());
 
   return section;
 }
