@@ -1,13 +1,14 @@
-import { FlaskConical, LayoutDashboard, createElement } from "lucide";
+import { FlaskConical, LayoutDashboard, Settings, createElement } from "lucide";
 import type { IconNode } from "lucide";
 import "./Sidebar.css";
+import { t } from "../../i18n";
 import { getCurrentPath } from "../../lib";
 import { Button } from "../Button";
-import { ThemeSwitcher } from "../ThemeSwitcher";
+import { SettingsDialog } from "../SettingsDialog";
 
-const LINKS: { path: string; label: string; icon: IconNode }[] = [
-  { path: "/", label: "dashboard", icon: LayoutDashboard },
-  { path: "/test", label: "test", icon: FlaskConical },
+const LINKS: { path: string; key: string; icon: IconNode }[] = [
+  { path: "/", key: "dashboard", icon: LayoutDashboard },
+  { path: "/test", key: "test", icon: FlaskConical },
 ];
 
 export function Sidebar(): HTMLElement {
@@ -16,10 +17,11 @@ export function Sidebar(): HTMLElement {
 
   const items: { button: HTMLButtonElement; path: string }[] = [];
 
-  for (const { path, label, icon } of LINKS) {
+  for (const { path, key, icon } of LINKS) {
     const button = Button({
       icon: createElement(icon),
-      label,
+      label: t(key),
+      i18nKey: key,
       selected: path === getCurrentPath(),
       onClick: () => {
         window.location.hash = `#${path}`;
@@ -39,7 +41,19 @@ export function Sidebar(): HTMLElement {
   syncPressed();
   window.addEventListener("hashchange", syncPressed);
 
-  nav.append(ThemeSwitcher());
+  const footer = document.createElement("div");
+  footer.className = "sidebar-footer";
+  footer.append(
+    Button({
+      icon: createElement(Settings),
+      label: t("setting"),
+      i18nKey: "setting",
+      onClick: () => {
+        document.body.append(SettingsDialog());
+      },
+    }),
+  );
+  nav.append(footer);
 
   return nav;
 }

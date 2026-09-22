@@ -22,7 +22,7 @@ export default defineConfig(() => ({
     environment: "happy-dom",
     coverage: {
       provider: "v8",
-      include: ["src/**/lib/**/*.ts"],
+      include: ["src/**/lib/**/*.ts", "src/**/i18n/**/*.ts"],
       exclude: ["src/**/*.test.ts", "src/**/index.ts", "src/vite-env.d.ts"],
       thresholds: {
         lines: 100,

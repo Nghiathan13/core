@@ -3,19 +3,31 @@ import "./Button.css";
 interface ButtonOptions {
   icon?: Element;
   label: string;
-  selected: boolean;
-  onClick: () => void;
+  i18nKey?: string;
+  selected?: boolean;
+  onClick?: () => void;
 }
 
-export function Button({ icon, label, selected, onClick }: ButtonOptions): HTMLButtonElement {
+export function Button({ icon, label, i18nKey, selected, onClick }: ButtonOptions): HTMLButtonElement {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "button state-layer";
-  button.setAttribute("aria-pressed", String(selected));
-  button.addEventListener("click", onClick);
+  if (selected !== undefined) {
+    button.setAttribute("aria-pressed", String(selected));
+  }
+  if (onClick) {
+    button.addEventListener("click", onClick);
+  }
   if (icon) {
     button.append(icon);
   }
-  button.append(label);
+  if (i18nKey) {
+    const text = document.createElement("span");
+    text.textContent = label;
+    text.setAttribute("data-i18n", i18nKey);
+    button.append(text);
+  } else {
+    button.append(label);
+  }
   return button;
 }

@@ -1,8 +1,8 @@
-.theme-switcher {
+.language-switcher {
   display: flex;
   gap: 8px;
 }
 
-.theme-switcher-title {
+.language-switcher-title {
   margin: 0 0 8px;
 }

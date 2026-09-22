@@ -1,0 +1,19 @@
+.settings-dialog {
+  display: flex;
+}
+
+.settings-dialog-nav {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+.settings-dialog-content {
+  flex: 1;
+  padding: 16px;
+}
+
+.settings-dialog-content > section + section {
+  margin-top: 16px;
+}

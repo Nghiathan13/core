@@ -1,7 +1,7 @@
 import "./TabButton.css";
 
 interface TabButtonOptions {
-  icon: Element;
+  icon?: Element;
   label: string;
   selected: boolean;
   onClick: () => void;
@@ -19,6 +19,10 @@ export function TabButton({
   button.setAttribute("aria-label", label);
   button.setAttribute("aria-pressed", String(selected));
   button.addEventListener("click", onClick);
-  button.append(icon);
+  if (icon) {
+    button.append(icon);
+  } else {
+    button.append(label);
+  }
   return button;
 }

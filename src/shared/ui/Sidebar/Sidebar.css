@@ -9,3 +9,9 @@
   background: var(--surface);
   border-right: var(--border-width) solid var(--border);
 }
+
+.sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+}

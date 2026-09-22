@@ -1,8 +1,10 @@
+import { initLanguage } from "@/shared/i18n";
 import { initTheme } from "@/shared/lib";
 import { Sidebar } from "@/shared/ui";
 import { initRouter } from "./router";
 
 initTheme();
+initLanguage();
 
 document.body.prepend(Sidebar());
 

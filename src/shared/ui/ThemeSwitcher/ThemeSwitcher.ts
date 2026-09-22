@@ -1,5 +1,6 @@
 import { createElement, Monitor, Moon, Sun } from "lucide";
 import type { IconNode } from "lucide";
+import { t } from "../../i18n";
 import { getThemeMode, setThemeMode } from "../../lib";
 import type { ThemeMode } from "../../lib";
 import { TabButton } from "../TabButton";
@@ -12,6 +13,13 @@ const MODES: { mode: ThemeMode; icon: IconNode }[] = [
 ];
 
 export function ThemeSwitcher(): HTMLElement {
+  const section = document.createElement("section");
+
+  const heading = document.createElement("h2");
+  heading.className = "theme-switcher-title";
+  heading.textContent = t("theme");
+  heading.setAttribute("data-i18n", "theme");
+
   const group = document.createElement("div");
   group.className = "theme-switcher";
   group.setAttribute("role", "group");
@@ -34,5 +42,7 @@ export function ThemeSwitcher(): HTMLElement {
     group.append(button);
   }
 
-  return group;
+  section.append(heading, group);
+
+  return section;
 }
