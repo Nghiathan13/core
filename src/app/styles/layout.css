@@ -10,3 +10,13 @@ main {
   margin-left: var(--sidebar-width);
   transition: margin-left var(--duration-short) var(--easing-standard);
 }
+
+body.resizing {
+  user-select: none;
+  cursor: ew-resize;
+}
+
+body.resizing .sidebar,
+body.resizing main {
+  transition: none;
+}

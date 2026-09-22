@@ -20,12 +20,34 @@
   flex-direction: column;
 }
 
+.sidebar-header .button {
+  cursor: w-resize;
+}
+
+body[data-sidebar="collapsed"] .sidebar-header .button {
+  cursor: e-resize;
+}
+
+.sidebar-resize-handle {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--sidebar-width) - 5px);
+  width: 9px;
+  cursor: ew-resize;
+  transition: left var(--duration-short) var(--easing-standard);
+}
+
+body.resizing .sidebar-resize-handle {
+  transition: none;
+}
+
 .button span {
   opacity: 1;
   transition: opacity var(--duration-short) var(--easing-standard);
 }
 
-body[data-sidebar="collapsed"] .button span {
+body[data-sidebar="collapsed"] .sidebar .button span {
   opacity: 0;
 }
 
