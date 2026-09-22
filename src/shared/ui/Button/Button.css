@@ -2,9 +2,11 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  height: 32px;
+  border: 0;
   background: transparent;
-  color: var(--foreground);
-  border: var(--border-width) solid var(--border);
+  color: var(--foreground-muted);
+  border-radius: var(--radius-md);
   cursor: pointer;
 }
 
@@ -12,7 +14,19 @@
   outline: var(--focus-ring-width) solid var(--ring);
 }
 
+.button:hover {
+  color: var(--foreground);
+}
+
 .button[aria-pressed="true"] {
-  background: var(--foreground);
-  color: var(--background);
+  color: var(--foreground);
+}
+
+.button[aria-pressed="true"]::after {
+  opacity: var(--state-press);
+}
+
+.button svg {
+  width: 20px;
+  height: 20px;
 }

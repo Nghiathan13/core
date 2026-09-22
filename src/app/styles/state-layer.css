@@ -6,6 +6,7 @@
   content: "";
   position: absolute;
   inset: 0;
+  border-radius: inherit;
   background: currentcolor;
   opacity: 0;
   pointer-events: none;

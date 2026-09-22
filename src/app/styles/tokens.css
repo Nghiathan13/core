@@ -6,6 +6,11 @@
   --border-width: 1px;
   --focus-ring-width: 2px;
 
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
   --text-xs: 12px;
   --text-xs--line-height: calc(var(--text-xs) * 4 / 3);
   --text-sm: 15px;
@@ -21,6 +26,7 @@
 
   --border: color-mix(in srgb, var(--foreground) 20%, transparent);
   --ring: var(--foreground);
+  --foreground-muted: color-mix(in srgb, var(--foreground) 65%, var(--background));
   --surface: color-mix(in srgb, var(--foreground) 4%, var(--background));
   --scrim: rgb(0 0 0 / 32%);
 }
