@@ -15,4 +15,16 @@ body {
   min-height: 100vh;
   background-color: var(--background);
   color: var(--foreground);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+}
+
+h1 {
+  font-size: var(--text-xl);
+  line-height: var(--text-xl--line-height);
+}
+
+h2 {
+  font-size: var(--text-md);
+  line-height: var(--text-md--line-height);
 }

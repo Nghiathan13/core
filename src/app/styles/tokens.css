@@ -6,6 +6,17 @@
   --border-width: 1px;
   --focus-ring-width: 2px;
 
+  --text-xs: 12px;
+  --text-xs--line-height: calc(var(--text-xs) * 4 / 3);
+  --text-sm: 15px;
+  --text-sm--line-height: calc(var(--text-sm) * 4 / 3);
+  --text-md: 18px;
+  --text-md--line-height: calc(var(--text-md) * 4 / 3);
+  --text-lg: 21px;
+  --text-lg--line-height: calc(var(--text-lg) * 4 / 3);
+  --text-xl: 24px;
+  --text-xl--line-height: calc(var(--text-xl) * 4 / 3);
+
   --modal-max-width: 800px;
 
   --border: color-mix(in srgb, var(--foreground) 20%, transparent);
