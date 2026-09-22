@@ -8,14 +8,26 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
+    "lint": "eslint src",
+    "check:fsd": "steiger src",
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
     "@tauri-apps/api": "^2"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.7",
+    "@feature-sliced/eslint-config": "^0.1.1",
+    "@feature-sliced/steiger-plugin": "^0.7.0",
     "@tauri-apps/cli": "^2",
+    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/parser": "^8.70.0",
+    "eslint": "^10.11.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-boundaries": "^7.2.0",
+    "eslint-plugin-import": "^2.32.0",
     "simple-git-hooks": "^2.14.0",
+    "steiger": "^0.6.0",
     "typescript": "~6.0.3",
     "vite": "^8.0.16"
   }
