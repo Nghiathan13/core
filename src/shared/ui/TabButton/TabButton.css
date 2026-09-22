@@ -1,20 +1,18 @@
-.theme-switcher {
-  display: flex;
-  gap: 8px;
-}
-
-.theme-switcher__button {
+.tab-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--color-button-bg);
   color: var(--color-button-text);
   border: var(--border-width) solid var(--color-button-border);
   cursor: pointer;
 }
 
-.theme-switcher__button:focus-visible {
+.tab-button:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus-ring);
 }
 
-.theme-switcher__button[aria-pressed="true"] {
+.tab-button[aria-pressed="true"] {
   background: var(--color-button-bg-active);
   color: var(--color-button-text-active);
 }

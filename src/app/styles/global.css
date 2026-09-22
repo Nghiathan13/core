@@ -1,3 +1,4 @@
+@import "./reset.css";
 @import "./tokens.css";
 @import "./state-layer.css";
 @import "./layout.css";
@@ -11,7 +12,6 @@
 }
 
 body {
-  margin: 0;
   min-height: 100vh;
   background-color: var(--color-app-bg);
   color: var(--color-text-primary);
