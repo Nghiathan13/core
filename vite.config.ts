@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 // @ts-expect-error type error without @types/node package
 import path from "node:path";
 // @ts-expect-error type error without @types/node package
@@ -15,6 +15,21 @@ export default defineConfig(() => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+    },
+  },
+
+  test: {
+    environment: "happy-dom",
+    coverage: {
+      provider: "v8",
+      include: ["src/**/lib/**/*.ts"],
+      exclude: ["src/**/*.test.ts", "src/**/index.ts", "src/vite-env.d.ts"],
+      thresholds: {
+        lines: 100,
+        functions: 100,
+        branches: 100,
+        statements: 100,
+      },
     },
   },
 
