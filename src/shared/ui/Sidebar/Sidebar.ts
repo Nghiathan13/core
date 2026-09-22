@@ -1,4 +1,4 @@
-import { FlaskConical, LayoutDashboard, Settings, createElement } from "lucide";
+import { FlaskConical, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Settings, createElement } from "lucide";
 import type { IconNode } from "lucide";
 import "./Sidebar.css";
 import { t } from "../../i18n";
@@ -15,6 +15,31 @@ export function Sidebar(): HTMLElement {
   const nav = document.createElement("nav");
   nav.className = "sidebar";
 
+  let collapsed = false;
+
+  const toggleButton = Button({
+    icon: createElement(PanelLeftClose),
+    label: "Collapse sidebar",
+    hideLabel: true,
+    onClick: () => {
+      collapsed = !collapsed;
+      if (collapsed) {
+        document.body.setAttribute("data-sidebar", "collapsed");
+      } else {
+        document.body.removeAttribute("data-sidebar");
+      }
+      toggleButton.querySelector("svg")?.replaceWith(createElement(collapsed ? PanelLeftOpen : PanelLeftClose));
+      toggleButton.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+    },
+  });
+  const header = document.createElement("div");
+  header.className = "sidebar-header";
+  header.append(toggleButton);
+  nav.append(header);
+
+  const content = document.createElement("div");
+  content.className = "sidebar-content";
+
   const items: { button: HTMLButtonElement; path: string }[] = [];
 
   for (const { path, key, icon } of LINKS) {
@@ -28,8 +53,9 @@ export function Sidebar(): HTMLElement {
       },
     });
     items.push({ button, path });
-    nav.append(button);
+    content.append(button);
   }
+  nav.append(content);
 
   const syncPressed = (): void => {
     const current = getCurrentPath();

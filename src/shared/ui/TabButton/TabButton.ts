@@ -3,7 +3,7 @@ import "./TabButton.css";
 interface TabButtonOptions {
   icon?: Element;
   label: string;
-  selected: boolean;
+  selected?: boolean;
   onClick: () => void;
 }
 
@@ -17,7 +17,9 @@ export function TabButton({
   button.type = "button";
   button.className = "tab-button state-layer";
   button.setAttribute("aria-label", label);
-  button.setAttribute("aria-pressed", String(selected));
+  if (selected !== undefined) {
+    button.setAttribute("aria-pressed", String(selected));
+  }
   button.addEventListener("click", onClick);
   if (icon) {
     button.append(icon);

@@ -8,12 +8,29 @@
   flex-direction: column;
   gap: 4px;
   padding: 8px;
+  overflow: hidden;
   background: var(--surface);
   border-right: var(--border-width) solid var(--border);
+  transition: width var(--duration-short) var(--easing-standard);
 }
 
 .sidebar-footer {
   margin-top: auto;
   display: flex;
   flex-direction: column;
+}
+
+.button span {
+  opacity: 1;
+  transition: opacity var(--duration-short) var(--easing-standard);
+}
+
+body[data-sidebar="collapsed"] .button span {
+  opacity: 0;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }

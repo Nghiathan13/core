@@ -1,0 +1,11 @@
+:root {
+  --duration-short: 200ms;
+  --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  main {
+    transition: none;
+  }
+}

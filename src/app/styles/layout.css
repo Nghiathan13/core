@@ -1,7 +1,12 @@
 :root {
-  --sidebar-width: 200px;
+  --sidebar-width: 253px;
+}
+
+body[data-sidebar="collapsed"] {
+  --sidebar-width: 53px;
 }
 
 main {
   margin-left: var(--sidebar-width);
+  transition: margin-left var(--duration-short) var(--easing-standard);
 }
