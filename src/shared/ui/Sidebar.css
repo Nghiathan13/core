@@ -18,3 +18,8 @@
 .sidebar__button:focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus-ring);
 }
+
+.sidebar__button[aria-pressed="true"] {
+  background: var(--color-button-bg-active);
+  color: var(--color-button-text-active);
+}

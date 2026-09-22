@@ -1,5 +1,6 @@
 import { DashboardPage } from "@/pages/dashboard";
 import { TestPage } from "@/pages/test";
+import { getCurrentPath } from "@/shared/lib";
 
 type PageRenderer = () => HTMLElement;
 
@@ -13,11 +14,6 @@ const routes: Route[] = [
   { path: "/dashboard", render: DashboardPage },
   { path: "/test", render: TestPage },
 ];
-
-function getCurrentPath(): string {
-  const hash = window.location.hash.replace(/^#/, "");
-  return hash === "" ? "/" : hash;
-}
 
 function renderNotFound(path: string): HTMLElement {
   const section = document.createElement("section");
