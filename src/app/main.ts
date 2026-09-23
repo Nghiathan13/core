@@ -6,7 +6,7 @@ import { initRouter } from "./router";
 initTheme();
 initLanguage();
 
-document.body.prepend(Sidebar());
+document.body.prepend(Sidebar().el);
 
 const outlet = document.querySelector<HTMLElement>("main");
 
