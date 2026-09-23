@@ -1,9 +1,5 @@
-:root {
-  --sidebar-width: 253px;
-}
-
 body[data-sidebar="collapsed"] {
-  --sidebar-width: 53px;
+  --sidebar-width: var(--sidebar-collapsed-width);
 }
 
 main {

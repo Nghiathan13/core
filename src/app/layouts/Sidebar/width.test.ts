@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clampWidth, computeLiveWidth, maxWidth, shouldSnapCollapse } from "./width";
+import { applySidebarWidthTokens, clampWidth, computeLiveWidth, maxWidth, shouldSnapCollapse } from "./width";
 
 describe("maxWidth", () => {
   it("limits sidebar to 40% of viewport", () => {
@@ -13,7 +13,7 @@ describe("clampWidth", () => {
   });
 
   it("raises value below minimum", () => {
-    expect(clampWidth(100, 1000)).toBe(153);
+    expect(clampWidth(100, 1000)).toBe(200);
   });
 
   it("lowers value above maximum", () => {
@@ -41,6 +41,15 @@ describe("shouldSnapCollapse", () => {
   });
 
   it("keeps open at snap threshold", () => {
-    expect(shouldSnapCollapse(76)).toBe(false);
+    expect(shouldSnapCollapse(100)).toBe(false);
+  });
+});
+
+describe("applySidebarWidthTokens", () => {
+  it("exposes width constants as CSS variables", () => {
+    const root = document.createElement("div");
+    applySidebarWidthTokens(root);
+    expect(root.style.getPropertyValue("--sidebar-width")).toBe("253px");
+    expect(root.style.getPropertyValue("--sidebar-collapsed-width")).toBe("53px");
   });
 });

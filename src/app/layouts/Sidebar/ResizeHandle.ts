@@ -6,17 +6,17 @@ const DRAG_THRESHOLD = 4;
 
 export function ResizeHandle(nav: HTMLElement): View {
   const controller = new AbortController();
-  let customWidth = DEFAULT_WIDTH;
+  let preferredWidth = DEFAULT_WIDTH;
 
-  const applyCustomWidth = (): void => {
-    document.body.style.setProperty("--sidebar-width", `${clampWidth(customWidth, window.innerWidth)}px`);
+  const applyWidth = (): void => {
+    document.body.style.setProperty("--sidebar-width", `${clampWidth(preferredWidth, window.innerWidth)}px`);
   };
 
   const unsubscribeWidth = subscribeCollapse(() => {
     if (isCollapsed()) {
       document.body.style.removeProperty("--sidebar-width");
     } else {
-      applyCustomWidth();
+      applyWidth();
     }
   });
 
@@ -29,34 +29,67 @@ export function ResizeHandle(nav: HTMLElement): View {
     handle.setPointerCapture(event.pointerId);
 
     const startX = event.clientX;
+    const rectLeft = nav.getBoundingClientRect().left;
+    let latestX = startX;
+    let frame: number | undefined;
+    let dragging = false;
 
-    const move = (moveEvent: PointerEvent): void => {
-      if (Math.abs(moveEvent.clientX - startX) < DRAG_THRESHOLD) {
-        return;
-      }
-      document.body.classList.add("resizing");
-      const rect = nav.getBoundingClientRect();
-      const live = computeLiveWidth(moveEvent.clientX, rect.left, window.innerWidth);
+    const applyMove = (): void => {
+      frame = undefined;
+      const viewportWidth = window.innerWidth;
+      const live = computeLiveWidth(latestX, rectLeft, viewportWidth);
       if (shouldSnapCollapse(live)) {
         if (!isCollapsed()) {
           setCollapsed(true);
         }
-      } else {
-        customWidth = clampWidth(live, window.innerWidth);
-        if (isCollapsed()) {
-          setCollapsed(false);
-        } else {
-          applyCustomWidth();
-        }
+        return;
       }
+      const next = clampWidth(live, viewportWidth);
+      if (isCollapsed()) {
+        preferredWidth = next;
+        setCollapsed(false);
+        return;
+      }
+      if (next !== preferredWidth) {
+        preferredWidth = next;
+        applyWidth();
+      }
+    };
+
+    const move = (moveEvent: PointerEvent): void => {
+      latestX = moveEvent.clientX;
+      if (Math.abs(latestX - startX) < DRAG_THRESHOLD) {
+        return;
+      }
+      if (!dragging) {
+        dragging = true;
+        document.body.classList.add("resizing");
+      }
+      frame ??= requestAnimationFrame(applyMove);
     };
     const cleanup = (): void => {
       handle.removeEventListener("pointermove", move);
       handle.removeEventListener("pointerup", up);
-      handle.removeEventListener("pointercancel", cleanup);
+      handle.removeEventListener("pointercancel", cancel);
       document.body.classList.remove("resizing");
     };
+    const cancel = (): void => {
+      if (frame !== undefined) {
+        cancelAnimationFrame(frame);
+        frame = undefined;
+      }
+      cleanup();
+    };
+    const flush = (): void => {
+      if (frame !== undefined) {
+        cancelAnimationFrame(frame);
+        frame = undefined;
+        applyMove();
+      }
+    };
     const up = (upEvent: PointerEvent): void => {
+      latestX = upEvent.clientX;
+      flush();
       cleanup();
       if (wasCollapsed && Math.abs(upEvent.clientX - startX) < DRAG_THRESHOLD) {
         setCollapsed(false);
@@ -64,13 +97,13 @@ export function ResizeHandle(nav: HTMLElement): View {
     };
     handle.addEventListener("pointermove", move);
     handle.addEventListener("pointerup", up);
-    handle.addEventListener("pointercancel", cleanup);
+    handle.addEventListener("pointercancel", cancel);
   });
 
   handle.addEventListener("dblclick", () => {
-    customWidth = DEFAULT_WIDTH;
+    preferredWidth = DEFAULT_WIDTH;
     if (!isCollapsed()) {
-      applyCustomWidth();
+      applyWidth();
     }
   });
 
@@ -78,8 +111,7 @@ export function ResizeHandle(nav: HTMLElement): View {
     "resize",
     () => {
       if (!isCollapsed()) {
-        customWidth = clampWidth(customWidth, window.innerWidth);
-        applyCustomWidth();
+        applyWidth();
       }
     },
     { signal: controller.signal },

@@ -1,4 +1,6 @@
 .settings-dialog {
+  --settings-nav-width: 153px;
+
   display: flex;
 }
 
@@ -7,7 +9,7 @@
   flex-direction: column;
   flex-shrink: 0;
   gap: 4px;
-  width: 153px;
+  width: var(--settings-nav-width);
   padding: 8px;
   background: var(--surface);
   border-right: var(--border-width) solid var(--border);
