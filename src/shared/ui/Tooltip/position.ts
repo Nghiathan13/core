@@ -25,6 +25,7 @@ export interface PlacedTooltip {
 
 export const TOOLTIP_MARGIN = 8;
 export const TOOLTIP_GAP = 8;
+export const TOOLTIP_ARROW_SIZE = 8;
 
 const OPPOSITE: Record<TooltipPlacement, TooltipPlacement> = {
   top: "bottom",
@@ -70,6 +71,11 @@ function shiftCrossAxis(
     return { x: clamp(x, TOOLTIP_MARGIN, viewport.width - size.width - TOOLTIP_MARGIN), y };
   }
   return { x, y: clamp(y, TOOLTIP_MARGIN, viewport.height - size.height - TOOLTIP_MARGIN) };
+}
+
+export function computeArrowOffset(triggerCenter: number, tipStart: number, tipSize: number): number {
+  const half = TOOLTIP_ARROW_SIZE / 2;
+  return clamp(triggerCenter - tipStart, half + 2, tipSize - half - 2);
 }
 
 export function computePlacement(

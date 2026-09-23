@@ -32,6 +32,43 @@
   --tooltip-slide: -4px 0;
 }
 
+.tooltip-arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--tooltip-background);
+  border-radius: 0;
+  transform: rotate(45deg);
+}
+
+.tooltip[data-placement="top"] .tooltip-arrow {
+  bottom: -5px;
+  border-right: var(--border-width) solid var(--border);
+  border-bottom: var(--border-width) solid var(--border);
+  border-bottom-right-radius: var(--radius-xs);
+}
+
+.tooltip[data-placement="bottom"] .tooltip-arrow {
+  top: -5px;
+  border-top: var(--border-width) solid var(--border);
+  border-left: var(--border-width) solid var(--border);
+  border-top-left-radius: var(--radius-xs);
+}
+
+.tooltip[data-placement="left"] .tooltip-arrow {
+  right: -5px;
+  border-top: var(--border-width) solid var(--border);
+  border-right: var(--border-width) solid var(--border);
+  border-top-right-radius: var(--radius-xs);
+}
+
+.tooltip[data-placement="right"] .tooltip-arrow {
+  left: -5px;
+  border-bottom: var(--border-width) solid var(--border);
+  border-left: var(--border-width) solid var(--border);
+  border-bottom-left-radius: var(--radius-xs);
+}
+
 @keyframes tooltip-in {
   from {
     opacity: 0;

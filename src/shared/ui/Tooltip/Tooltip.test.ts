@@ -188,6 +188,18 @@ describe("attachTooltip", () => {
     trigger.remove();
   });
 
+  it("renders arrow pointing at trigger", () => {
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    const { detach } = attachTooltip(trigger, { text: "Expand", placement: "bottom" });
+    hover(trigger);
+    const arrow = document.body.querySelector(".tooltip-arrow");
+    expect(arrow?.getAttribute("aria-hidden")).toBe("true");
+    expect((arrow as HTMLElement | null)?.style.left).not.toBe("");
+    detach();
+    trigger.remove();
+  });
+
   it("removes listeners on detach", () => {    const trigger = document.createElement("button");
     document.body.append(trigger);
     const { detach } = attachTooltip(trigger, { text: "Expand" });

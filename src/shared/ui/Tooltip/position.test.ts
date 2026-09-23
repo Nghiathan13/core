@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computePlacement } from "./position";
+import { computeArrowOffset, computePlacement } from "./position";
 import type { TooltipSize, TooltipViewport } from "./position";
 
 const VIEWPORT: TooltipViewport = { width: 1000, height: 800 };
@@ -43,5 +43,16 @@ describe("computePlacement", () => {
     const placed = computePlacement({ x: 400, y: 400, width: 50, height: 30 }, huge, VIEWPORT, "top");
     expect(placed.x).toBeGreaterThanOrEqual(8);
     expect(placed.y).toBeGreaterThanOrEqual(8);
+  });
+});
+
+describe("computeArrowOffset", () => {
+  it("centers arrow on trigger", () => {
+    expect(computeArrowOffset(200, 150, 100)).toBe(50);
+  });
+
+  it("clamps arrow inside tooltip bounds", () => {
+    expect(computeArrowOffset(0, 150, 100)).toBe(6);
+    expect(computeArrowOffset(500, 150, 100)).toBe(94);
   });
 });

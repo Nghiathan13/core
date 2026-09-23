@@ -1,5 +1,5 @@
 import "./Tooltip.css";
-import { computePlacement } from "./position";
+import { TOOLTIP_ARROW_SIZE, computeArrowOffset, computePlacement } from "./position";
 import type { TooltipPlacement } from "./position";
 
 interface TooltipOptions {
@@ -24,6 +24,8 @@ let tooltipId = 0;
 export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): TooltipHandle {
   const delay = options.delay ?? TOOLTIP_SHOW_DELAY;
   let tip: HTMLElement | null = null;
+  let label: HTMLElement | null = null;
+  let arrow: HTMLElement | null = null;
   let timer: ReturnType<typeof setTimeout> | undefined;
 
   const resolveText = (): string => (typeof options.text === "function" ? options.text() : options.text);
@@ -32,7 +34,7 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
     typeof options.placement === "function" ? options.placement() : (options.placement ?? "top");
 
   const place = (): void => {
-    if (!tip) {
+    if (!tip || !arrow || !label) {
       return;
     }
     const rect = trigger.getBoundingClientRect();
@@ -46,6 +48,16 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
     tip.style.left = `${placed.x}px`;
     tip.style.top = `${placed.y}px`;
     tip.dataset.placement = placed.placement;
+    const half = TOOLTIP_ARROW_SIZE / 2;
+    if (placed.placement === "top" || placed.placement === "bottom") {
+      const offset = computeArrowOffset(rect.x + rect.width / 2, placed.x, size.width);
+      arrow.style.left = `${offset - half}px`;
+      arrow.style.top = "";
+    } else {
+      const offset = computeArrowOffset(rect.y + rect.height / 2, placed.y, size.height);
+      arrow.style.top = `${offset - half}px`;
+      arrow.style.left = "";
+    }
   };
 
   const show = (): void => {
@@ -61,7 +73,12 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
     tip.className = "tooltip";
     tip.setAttribute("role", "tooltip");
     tip.id = `tooltip-${tooltipId}`;
-    tip.textContent = text;
+    label = document.createElement("span");
+    label.textContent = text;
+    arrow = document.createElement("div");
+    arrow.className = "tooltip-arrow";
+    arrow.setAttribute("aria-hidden", "true");
+    tip.append(label, arrow);
     trigger.setAttribute("aria-describedby", tip.id);
     document.body.append(tip);
     place();
@@ -77,11 +94,13 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
     }
     tip?.remove();
     tip = null;
+    label = null;
+    arrow = null;
     trigger.removeAttribute("aria-describedby");
   };
 
   const refresh = (): void => {
-    if (!tip) {
+    if (!tip || !label) {
       return;
     }
     const text = resolveText();
@@ -89,7 +108,7 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
       hide();
       return;
     }
-    tip.textContent = text;
+    label.textContent = text;
     place();
   };
 
