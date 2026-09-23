@@ -8,4 +8,6 @@ export const vi: Record<keyof typeof en, string> = {
   appearance: "giao diện",
   theme: "chủ đề",
   language: "ngôn ngữ",
+  expand: "mở rộng",
+  collapse: "thu gọn",
 };

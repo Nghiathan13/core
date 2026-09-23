@@ -6,4 +6,6 @@ export const en = {
   appearance: "appearance",
   theme: "theme",
   language: "language",
+  expand: "expand",
+  collapse: "collapse",
 } as const;
