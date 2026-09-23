@@ -1,8 +1,10 @@
+import { t } from "@/shared/i18n";
 import type { View } from "@/shared/lib";
 import { isCollapsed, setCollapsed, subscribeCollapse } from "./collapse";
-import { DEFAULT_WIDTH, clampWidth, computeLiveWidth, shouldSnapCollapse } from "./width";
+import { COLLAPSED_WIDTH, DEFAULT_WIDTH, MIN_WIDTH, clampWidth, computeLiveWidth, maxWidth, shouldSnapCollapse } from "./width";
 
 const DRAG_THRESHOLD = 4;
+const KEYBOARD_STEP = 16;
 
 export function ResizeHandle(nav: HTMLElement): View {
   const controller = new AbortController();
@@ -18,10 +20,25 @@ export function ResizeHandle(nav: HTMLElement): View {
     } else {
       applyWidth();
     }
+    syncAria();
   });
 
   const handle = document.createElement("div");
   handle.className = "sidebar-resize-handle";
+  handle.tabIndex = 0;
+  handle.setAttribute("role", "separator");
+  handle.setAttribute("aria-orientation", "vertical");
+  handle.setAttribute("aria-label", t("resizeSidebar"));
+  handle.setAttribute("aria-controls", nav.id);
+
+  const syncAria = (): void => {
+    const viewportWidth = window.innerWidth;
+    const current = isCollapsed() ? COLLAPSED_WIDTH : clampWidth(preferredWidth, viewportWidth);
+    handle.setAttribute("aria-valuemin", String(COLLAPSED_WIDTH));
+    handle.setAttribute("aria-valuemax", String(Math.round(maxWidth(viewportWidth))));
+    handle.setAttribute("aria-valuenow", String(Math.round(current)));
+  };
+  syncAria();
 
   handle.addEventListener("pointerdown", (event) => {
     const wasCollapsed = isCollapsed();
@@ -54,6 +71,7 @@ export function ResizeHandle(nav: HTMLElement): View {
         preferredWidth = next;
         applyWidth();
       }
+      syncAria();
     };
 
     const move = (moveEvent: PointerEvent): void => {
@@ -105,6 +123,30 @@ export function ResizeHandle(nav: HTMLElement): View {
     if (!isCollapsed()) {
       applyWidth();
     }
+    syncAria();
+  });
+
+  handle.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+      return;
+    }
+    event.preventDefault();
+    const viewportWidth = window.innerWidth;
+    if (isCollapsed()) {
+      if (event.key === "ArrowRight") {
+        preferredWidth = MIN_WIDTH;
+        setCollapsed(false);
+      }
+      return;
+    }
+    const current = clampWidth(preferredWidth, viewportWidth);
+    if (event.key === "ArrowLeft" && current <= MIN_WIDTH) {
+      setCollapsed(true);
+      return;
+    }
+    preferredWidth = clampWidth(current + (event.key === "ArrowLeft" ? -KEYBOARD_STEP : KEYBOARD_STEP), viewportWidth);
+    applyWidth();
+    syncAria();
   });
 
   window.addEventListener(
@@ -113,6 +155,7 @@ export function ResizeHandle(nav: HTMLElement): View {
       if (!isCollapsed()) {
         applyWidth();
       }
+      syncAria();
     },
     { signal: controller.signal },
   );

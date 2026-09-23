@@ -8,6 +8,7 @@ export const en = {
   language: "Language",
   expand: "Expand Sidebar",
   collapse: "Collapse Sidebar",
+  resizeSidebar: "Resize Sidebar",
   system: "System",
   light: "Light",
   dark: "Dark",

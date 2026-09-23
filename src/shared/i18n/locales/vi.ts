@@ -10,6 +10,7 @@ export const vi: Record<keyof typeof en, string> = {
   language: "Ngôn ngữ",
   expand: "Mở rộng thanh bên",
   collapse: "Thu gọn thanh bên",
+  resizeSidebar: "Đổi kích thước thanh bên",
   system: "Hệ thống",
   light: "Sáng",
   dark: "Tối",

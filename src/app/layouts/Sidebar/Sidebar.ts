@@ -8,6 +8,7 @@ import { SettingsButton } from "./SettingsButton";
 export function Sidebar(): View {
   const nav = document.createElement("nav");
   nav.className = "sidebar";
+  nav.id = "sidebar";
 
   const collapseButton = CollapseButton();
   const header = document.createElement("div");

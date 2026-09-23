@@ -47,6 +47,11 @@ body.resizing .sidebar-resize-handle {
   transition: none;
 }
 
+.sidebar-resize-handle:focus-visible {
+  outline: var(--focus-ring-width) solid var(--ring);
+  outline-offset: -2px;
+}
+
 .sidebar-content {
   display: flex;
   flex-direction: column;
