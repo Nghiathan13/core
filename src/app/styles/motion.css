@@ -1,11 +1,17 @@
 :root {
   --duration-short: 200ms;
+  --duration-tooltip: 100ms;
   --easing-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sidebar,
+  .tooltip,
   main {
     transition: none;
+  }
+
+  .tooltip {
+    animation: none;
   }
 }

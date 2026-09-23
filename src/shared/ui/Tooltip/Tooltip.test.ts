@@ -177,6 +177,17 @@ describe("attachTooltip", () => {
     second.remove();
   });
 
+  it("exposes actual placement for directional animation", () => {
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    const { detach } = attachTooltip(trigger, { text: "Expand", placement: "bottom" });
+    hover(trigger);
+    const tip = document.body.querySelector(".tooltip");
+    expect(tip instanceof HTMLElement ? tip.dataset.placement : undefined).toBe("bottom");
+    detach();
+    trigger.remove();
+  });
+
   it("removes listeners on detach", () => {    const trigger = document.createElement("button");
     document.body.append(trigger);
     const { detach } = attachTooltip(trigger, { text: "Expand" });

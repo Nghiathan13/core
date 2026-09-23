@@ -28,6 +28,7 @@
   --ring: var(--foreground);
   --foreground-muted: color-mix(in srgb, var(--foreground) 65%, var(--background));
   --surface: color-mix(in srgb, var(--foreground) 4%, var(--background));
+  --tooltip-background: color-mix(in srgb, var(--foreground) 8%, var(--background));
   --scrim: rgb(0 0 0 / 32%);
 }
 

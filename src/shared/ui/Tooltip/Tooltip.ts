@@ -45,6 +45,7 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
     );
     tip.style.left = `${placed.x}px`;
     tip.style.top = `${placed.y}px`;
+    tip.dataset.placement = placed.placement;
   };
 
   const show = (): void => {

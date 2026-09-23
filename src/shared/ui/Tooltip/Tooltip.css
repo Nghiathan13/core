@@ -3,11 +3,38 @@
   left: 0;
   top: 0;
   max-width: 240px;
+  height: 24px;
   padding: 4px 8px;
-  background: var(--foreground);
-  color: var(--background);
-  font-size: var(--text-sm);
+  background: var(--tooltip-background);
+  color: var(--foreground);
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  border: var(--border-width) solid var(--border);
   border-radius: var(--radius-sm);
   white-space: nowrap;
   pointer-events: none;
+  animation: tooltip-in var(--duration-tooltip) var(--easing-standard);
+}
+
+.tooltip[data-placement="top"] {
+  --tooltip-slide: 0 4px;
+}
+
+.tooltip[data-placement="bottom"] {
+  --tooltip-slide: 0 -4px;
+}
+
+.tooltip[data-placement="left"] {
+  --tooltip-slide: 4px 0;
+}
+
+.tooltip[data-placement="right"] {
+  --tooltip-slide: -4px 0;
+}
+
+@keyframes tooltip-in {
+  from {
+    opacity: 0;
+    translate: var(--tooltip-slide, 0 0);
+  }
 }

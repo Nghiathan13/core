@@ -24,6 +24,7 @@ export interface PlacedTooltip {
 }
 
 export const TOOLTIP_MARGIN = 8;
+export const TOOLTIP_GAP = 8;
 
 const OPPOSITE: Record<TooltipPlacement, TooltipPlacement> = {
   top: "bottom",
@@ -37,13 +38,13 @@ const FALLBACK_ORDER: TooltipPlacement[] = ["top", "bottom", "left", "right"];
 function candidate(rect: TooltipRect, size: TooltipSize, placement: TooltipPlacement): { x: number; y: number } {
   switch (placement) {
     case "top":
-      return { x: rect.x + (rect.width - size.width) / 2, y: rect.y - size.height };
+      return { x: rect.x + (rect.width - size.width) / 2, y: rect.y - size.height - TOOLTIP_GAP };
     case "bottom":
-      return { x: rect.x + (rect.width - size.width) / 2, y: rect.y + rect.height };
+      return { x: rect.x + (rect.width - size.width) / 2, y: rect.y + rect.height + TOOLTIP_GAP };
     case "left":
-      return { x: rect.x - size.width, y: rect.y + (rect.height - size.height) / 2 };
+      return { x: rect.x - size.width - TOOLTIP_GAP, y: rect.y + (rect.height - size.height) / 2 };
     case "right":
-      return { x: rect.x + rect.width, y: rect.y + (rect.height - size.height) / 2 };
+      return { x: rect.x + rect.width + TOOLTIP_GAP, y: rect.y + (rect.height - size.height) / 2 };
   }
 }
 
