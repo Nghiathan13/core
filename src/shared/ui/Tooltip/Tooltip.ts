@@ -17,9 +17,30 @@ export interface TooltipHandle {
 export const TOOLTIP_SHOW_DELAY = 200;
 export const TOOLTIP_GRACE_PERIOD = 400;
 
+interface TooltipSession {
+  place: () => void;
+  hide: () => void;
+}
+
 let lastHideAt = 0;
+let active: TooltipSession | null = null;
+let globalsBound = false;
 
 let tooltipId = 0;
+
+function bindGlobals(): void {
+  if (globalsBound) {
+    return;
+  }
+  globalsBound = true;
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      active?.hide();
+    }
+  });
+  window.addEventListener("scroll", () => active?.place(), true);
+  window.addEventListener("resize", () => active?.place());
+}
 
 export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): TooltipHandle {
   const delay = options.delay ?? TOOLTIP_SHOW_DELAY;
@@ -27,6 +48,7 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
   let label: HTMLElement | null = null;
   let arrow: HTMLElement | null = null;
   let timer: ReturnType<typeof setTimeout> | undefined;
+  let pressed = false;
 
   const resolveText = (): string => (typeof options.text === "function" ? options.text() : options.text);
 
@@ -68,6 +90,8 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
     if (text === "") {
       return;
     }
+    bindGlobals();
+    active?.hide();
     tooltipId += 1;
     tip = document.createElement("div");
     tip.className = "tooltip";
@@ -81,6 +105,7 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
     tip.append(label, arrow);
     trigger.setAttribute("aria-describedby", tip.id);
     document.body.append(tip);
+    active = { place, hide };
     place();
   };
 
@@ -91,6 +116,9 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
     }
     if (tip) {
       lastHideAt = Date.now();
+    }
+    if (active?.hide === hide) {
+      active = null;
     }
     tip?.remove();
     tip = null;
@@ -127,33 +155,43 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
     }, delay);
   };
 
-  const onKey = (event: KeyboardEvent): void => {
-    if (event.key === "Escape") {
-      hide();
+  const onMouseDown = (): void => {
+    pressed = true;
+    hide();
+  };
+
+  const onMouseUp = (): void => {
+    pressed = false;
+  };
+
+  const onFocus = (): void => {
+    if (!pressed) {
+      show();
     }
+  };
+
+  const onBlur = (): void => {
+    pressed = false;
+    hide();
   };
 
   trigger.addEventListener("mouseenter", schedule);
   trigger.addEventListener("mouseleave", hide);
-  trigger.addEventListener("focus", show);
-  trigger.addEventListener("blur", hide);
-  trigger.addEventListener("mousedown", hide);
+  trigger.addEventListener("focus", onFocus);
+  trigger.addEventListener("blur", onBlur);
+  trigger.addEventListener("mousedown", onMouseDown);
+  trigger.addEventListener("mouseup", onMouseUp);
   trigger.addEventListener("click", hide);
-  window.addEventListener("keydown", onKey);
-  window.addEventListener("scroll", place, true);
-  window.addEventListener("resize", place);
 
   return {
     detach: () => {
       trigger.removeEventListener("mouseenter", schedule);
       trigger.removeEventListener("mouseleave", hide);
-      trigger.removeEventListener("focus", show);
-      trigger.removeEventListener("blur", hide);
-      trigger.removeEventListener("mousedown", hide);
+      trigger.removeEventListener("focus", onFocus);
+      trigger.removeEventListener("blur", onBlur);
+      trigger.removeEventListener("mousedown", onMouseDown);
+      trigger.removeEventListener("mouseup", onMouseUp);
       trigger.removeEventListener("click", hide);
-      window.removeEventListener("keydown", onKey);
-      window.removeEventListener("scroll", place, true);
-      window.removeEventListener("resize", place);
       hide();
     },
     refresh,

@@ -117,6 +117,19 @@ describe("attachTooltip", () => {
     trigger.remove();
   });
 
+  it("stays hidden when pressed and focused", () => {
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    const { detach } = attachTooltip(trigger, { text: "Expand" });
+    hover(trigger);
+    expect(tips()).toBe(1);
+    trigger.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+    trigger.dispatchEvent(new FocusEvent("focus"));
+    expect(tips()).toBe(0);
+    detach();
+    trigger.remove();
+  });
+
   it("waits for delay before showing", () => {
     const trigger = document.createElement("button");
     document.body.append(trigger);
