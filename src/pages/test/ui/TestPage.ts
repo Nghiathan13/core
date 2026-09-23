@@ -1,6 +1,7 @@
 import { t } from "@/shared/i18n";
+import type { View } from "@/shared/lib";
 
-export function TestPage(): HTMLElement {
+export function TestPage(): View {
   const section = document.createElement("section");
 
   const heading = document.createElement("h1");
@@ -9,5 +10,5 @@ export function TestPage(): HTMLElement {
 
   section.append(heading);
 
-  return section;
+  return { el: section };
 }

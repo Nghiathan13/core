@@ -1,8 +1,9 @@
 import { DashboardPage } from "@/pages/dashboard";
 import { TestPage } from "@/pages/test";
 import { getCurrentPath } from "@/shared/lib";
+import type { View } from "@/shared/lib";
 
-type PageRenderer = () => HTMLElement;
+type PageRenderer = () => HTMLElement | View;
 
 interface Route {
   path: string;
@@ -21,15 +22,38 @@ function renderNotFound(path: string): HTMLElement {
   return section;
 }
 
-function render(outlet: HTMLElement): void {
-  const path = getCurrentPath();
-  const match = routes.find((route) => route.path === path);
-  outlet.replaceChildren(match ? match.render() : renderNotFound(path));
+function isView(node: HTMLElement | View): node is View {
+  return !(node instanceof HTMLElement);
 }
 
-export function initRouter(outlet: HTMLElement): void {
-  window.addEventListener("hashchange", () => render(outlet));
-  render(outlet);
+function mount(outlet: HTMLElement, node: HTMLElement | View): (() => void) | undefined {
+  if (isView(node)) {
+    outlet.replaceChildren(node.el);
+    return node.destroy;
+  }
+  outlet.replaceChildren(node);
+  return undefined;
+}
+
+export function initRouter(outlet: HTMLElement): () => void {
+  let currentDestroy: (() => void) | undefined;
+  const controller = new AbortController();
+
+  const render = (): void => {
+    currentDestroy?.();
+    const path = getCurrentPath();
+    const match = routes.find((route) => route.path === path);
+    const node = match ? match.render() : renderNotFound(path);
+    currentDestroy = mount(outlet, node);
+  };
+
+  window.addEventListener("hashchange", render, { signal: controller.signal });
+  render();
+
+  return () => {
+    controller.abort();
+    currentDestroy?.();
+  };
 }
 
 export function navigate(path: string): void {
