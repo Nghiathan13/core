@@ -25,7 +25,7 @@ describe("language", () => {
 
   it("translates known keys", () => {
     setLanguage("vi");
-    expect(t("setting")).toBe("cài đặt");
+    expect(t("setting")).toBe("Cài đặt");
   });
 
   it("returns key for unknown keys", () => {
@@ -37,7 +37,7 @@ describe("language", () => {
     element.setAttribute("data-i18n", "setting");
     document.body.append(element);
     setLanguage("vi");
-    expect(element.textContent).toBe("cài đặt");
+    expect(element.textContent).toBe("Cài đặt");
   });
 
   it("skips data-i18n elements without key", () => {

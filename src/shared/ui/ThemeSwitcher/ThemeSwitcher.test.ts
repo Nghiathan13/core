@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { setLanguage } from "@/shared/i18n";
-import { TOOLTIP_SHOW_DELAY } from "@/shared/ui/Tooltip";
-import { setCollapsed } from "./collapse";
-import { NavLinks } from "./NavLinks";
+import { setLanguage } from "../../i18n";
+import { setThemeMode } from "../../lib";
+import { TOOLTIP_SHOW_DELAY } from "../Tooltip";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -11,33 +11,33 @@ beforeEach(() => {
 
 afterEach(() => {
   document.body.querySelectorAll(".tooltip").forEach((tip) => tip.remove());
-  document.body.querySelectorAll(".sidebar-content").forEach((el) => el.remove());
-  setCollapsed(false);
+  document.body.querySelectorAll("section").forEach((el) => el.remove());
   vi.useRealTimers();
 });
 
-describe("NavLinks tooltips", () => {
-  it("shows tooltip when sidebar is collapsed", () => {
+describe("ThemeSwitcher tooltips", () => {
+  it("shows mode name on hover", () => {
     setLanguage("en");
-    setCollapsed(true);
-    const view = NavLinks();
+    setThemeMode("system");
+    const view = ThemeSwitcher();
     document.body.append(view.el);
     const first = view.el.querySelector("button");
     first?.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
     vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
-    expect(document.body.querySelector(".tooltip")?.textContent).toBe("Dashboard");
+    expect(document.body.querySelector(".tooltip")?.textContent).toBe("System");
     view.destroy?.();
   });
 
-  it("hides tooltip when sidebar is expanded", () => {
+  it("detaches tooltips on destroy", () => {
     setLanguage("en");
-    setCollapsed(false);
-    const view = NavLinks();
+    setThemeMode("system");
+    const view = ThemeSwitcher();
     document.body.append(view.el);
+    view.destroy?.();
     const first = view.el.querySelector("button");
     first?.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
     vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
     expect(document.body.querySelectorAll(".tooltip").length).toBe(0);
-    view.destroy?.();
+    view.el.remove();
   });
 });

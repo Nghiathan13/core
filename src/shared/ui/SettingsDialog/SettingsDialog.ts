@@ -1,6 +1,7 @@
 import { Palette, Settings, createElement } from "lucide";
 import type { IconNode } from "lucide";
 import { t } from "../../i18n";
+import type { View } from "../../lib";
 import { Button } from "../Button";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 import { Modal } from "../Modal";
@@ -11,7 +12,7 @@ interface Section {
   id: string;
   key: string;
   icon: IconNode;
-  render: () => HTMLElement;
+  render: () => View;
 }
 
 const SECTIONS: Section[] = [
@@ -30,11 +31,16 @@ export function SettingsDialog(options?: { onClose?: () => void }): HTMLElement 
   content.className = "settings-dialog-content";
 
   const items: { button: HTMLButtonElement; id: string }[] = [];
+  let contentDestroy: (() => void) | undefined;
 
   const showSection = (id: string): void => {
+    contentDestroy?.();
+    contentDestroy = undefined;
     const section = SECTIONS.find((entry) => entry.id === id);
     if (section) {
-      content.replaceChildren(section.render());
+      const view = section.render();
+      content.replaceChildren(view.el);
+      contentDestroy = view.destroy;
     }
     for (const item of items) {
       item.button.setAttribute("aria-pressed", String(item.id === id));
@@ -56,5 +62,12 @@ export function SettingsDialog(options?: { onClose?: () => void }): HTMLElement 
   layout.append(nav, content);
   showSection(SECTIONS[0].id);
 
-  return Modal({ titleKey: "setting", body: layout, onClose: options?.onClose });
+  return Modal({
+    titleKey: "setting",
+    body: layout,
+    onClose: () => {
+      contentDestroy?.();
+      options?.onClose?.();
+    },
+  });
 }

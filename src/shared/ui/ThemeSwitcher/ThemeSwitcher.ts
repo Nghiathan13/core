@@ -2,8 +2,9 @@ import { createElement, Monitor, Moon, Sun } from "lucide";
 import type { IconNode } from "lucide";
 import { t } from "../../i18n";
 import { getThemeMode, setThemeMode } from "../../lib";
-import type { ThemeMode } from "../../lib";
+import type { ThemeMode, View } from "../../lib";
 import { TabButton } from "../TabButton";
+import { attachTooltip } from "../Tooltip";
 import "./ThemeSwitcher.css";
 
 const MODES: { mode: ThemeMode; icon: IconNode }[] = [
@@ -12,7 +13,7 @@ const MODES: { mode: ThemeMode; icon: IconNode }[] = [
   { mode: "dark", icon: Moon },
 ];
 
-export function ThemeSwitcher(): HTMLElement {
+export function ThemeSwitcher(): View {
   const section = document.createElement("section");
 
   const heading = document.createElement("h2");
@@ -26,6 +27,7 @@ export function ThemeSwitcher(): HTMLElement {
   group.setAttribute("aria-label", "Theme");
 
   const current = getThemeMode();
+  const detachTooltips: (() => void)[] = [];
 
   for (const { mode, icon } of MODES) {
     const button = TabButton({
@@ -39,10 +41,19 @@ export function ThemeSwitcher(): HTMLElement {
         });
       },
     });
+    const { detach } = attachTooltip(button, { text: () => t(mode), placement: "top" });
+    detachTooltips.push(detach);
     group.append(button);
   }
 
   section.append(heading, group);
 
-  return section;
+  return {
+    el: section,
+    destroy: () => {
+      for (const detach of detachTooltips) {
+        detach();
+      }
+    },
+  };
 }

@@ -1,14 +1,16 @@
 import { getLanguage, setLanguage, t } from "../../i18n";
 import type { Language } from "../../i18n";
+import type { View } from "../../lib";
 import { TabButton } from "../TabButton";
+import { attachTooltip } from "../Tooltip";
 import "./LanguageSwitcher.css";
 
-const LANGUAGES: { code: Language; label: string }[] = [
-  { code: "vi", label: "VI" },
-  { code: "en", label: "EN" },
+const LANGUAGES: { code: Language; label: string; key: string }[] = [
+  { code: "vi", label: "VI", key: "vietnamese" },
+  { code: "en", label: "EN", key: "english" },
 ];
 
-export function LanguageSwitcher(): HTMLElement {
+export function LanguageSwitcher(): View {
   const section = document.createElement("section");
 
   const heading = document.createElement("h2");
@@ -22,8 +24,9 @@ export function LanguageSwitcher(): HTMLElement {
   group.setAttribute("aria-label", "Language");
 
   const current = getLanguage();
+  const detachTooltips: (() => void)[] = [];
 
-  for (const { code, label } of LANGUAGES) {
+  for (const { code, label, key } of LANGUAGES) {
     const button = TabButton({
       label,
       selected: code === current,
@@ -34,10 +37,19 @@ export function LanguageSwitcher(): HTMLElement {
         });
       },
     });
+    const { detach } = attachTooltip(button, { text: () => t(key), placement: "top" });
+    detachTooltips.push(detach);
     group.append(button);
   }
 
   section.append(heading, group);
 
-  return section;
+  return {
+    el: section,
+    destroy: () => {
+      for (const detach of detachTooltips) {
+        detach();
+      }
+    },
+  };
 }

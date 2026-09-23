@@ -1,13 +1,18 @@
 import type { en } from "./en";
 
 export const vi: Record<keyof typeof en, string> = {
-  dashboard: "tổng quan",
-  test: "kiểm thử",
-  setting: "cài đặt",
-  general: "chung",
-  appearance: "giao diện",
-  theme: "chủ đề",
-  language: "ngôn ngữ",
-  expand: "mở rộng",
-  collapse: "thu gọn",
+  dashboard: "Tổng quan",
+  test: "Kiểm thử",
+  setting: "Cài đặt",
+  general: "Chung",
+  appearance: "Giao diện",
+  theme: "Chủ đề",
+  language: "Ngôn ngữ",
+  expand: "Mở rộng thanh bên",
+  collapse: "Thu gọn thanh bên",
+  system: "Hệ thống",
+  light: "Sáng",
+  dark: "Tối",
+  vietnamese: "Tiếng Việt",
+  english: "Tiếng Anh",
 };
