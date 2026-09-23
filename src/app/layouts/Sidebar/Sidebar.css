@@ -20,6 +20,11 @@
   flex-direction: column;
 }
 
+.sidebar .button {
+  gap: 8px;
+  overflow: clip;
+}
+
 .sidebar-header .button {
   cursor: w-resize;
 }
@@ -40,15 +45,6 @@ body[data-sidebar="collapsed"] .sidebar-header .button {
 
 body.resizing .sidebar-resize-handle {
   transition: none;
-}
-
-.button span {
-  opacity: 1;
-  transition: opacity var(--duration-short) var(--easing-standard);
-}
-
-body[data-sidebar="collapsed"] .sidebar .button span {
-  opacity: 0;
 }
 
 .sidebar-content {
