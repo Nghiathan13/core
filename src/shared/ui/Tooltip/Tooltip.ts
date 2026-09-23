@@ -165,7 +165,7 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
   };
 
   const onFocus = (): void => {
-    if (!pressed) {
+    if (!pressed && trigger.matches(":focus-visible")) {
       show();
     }
   };
