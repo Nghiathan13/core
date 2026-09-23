@@ -22,7 +22,7 @@ describe("NavLinks tooltips", () => {
     setCollapsed(true);
     const view = NavLinks();
     document.body.append(view.el);
-    const first = view.el.querySelector("button");
+    const first = view.el.querySelector("a");
     first?.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
     vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
     expect(document.body.querySelector(".tooltip")?.textContent).toBe("Dashboard");
@@ -34,7 +34,7 @@ describe("NavLinks tooltips", () => {
     setCollapsed(false);
     const view = NavLinks();
     document.body.append(view.el);
-    const first = view.el.querySelector("button");
+    const first = view.el.querySelector("a");
     first?.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
     vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
     expect(document.body.querySelectorAll(".tooltip").length).toBe(0);

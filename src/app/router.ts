@@ -55,7 +55,3 @@ export function initRouter(outlet: HTMLElement): () => void {
     currentDestroy?.();
   };
 }
-
-export function navigate(path: string): void {
-  window.location.hash = `#${path}`;
-}

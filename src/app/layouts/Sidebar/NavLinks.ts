@@ -3,16 +3,17 @@ import type { IconNode } from "lucide";
 import { t } from "@/shared/i18n";
 import { getCurrentPath } from "@/shared/lib";
 import type { View } from "@/shared/lib";
-import { Button, attachTooltip } from "@/shared/ui";
+import { attachTooltip } from "@/shared/ui";
 import { isCollapsed } from "./collapse";
+import { NavLink } from "./NavLink";
 
-interface NavLink {
+interface NavItem {
   path: string;
   key: string;
   icon: IconNode;
 }
 
-const LINKS: NavLink[] = [
+const LINKS: NavItem[] = [
   { path: "/", key: "dashboard", icon: LayoutDashboard },
   { path: "/test", key: "test", icon: FlaskConical },
 ];
@@ -22,37 +23,38 @@ export function NavLinks(): View {
   const content = document.createElement("div");
   content.className = "sidebar-content";
 
-  const items: { button: HTMLButtonElement; path: string }[] = [];
+  const items: { link: HTMLAnchorElement; path: string }[] = [];
   const detachTooltips: (() => void)[] = [];
 
   for (const { path, key, icon } of LINKS) {
-    const button = Button({
-      icon: createElement(icon),
-      label: t(key),
+    const link = NavLink({
+      path,
       i18nKey: key,
-      selected: path === getCurrentPath(),
-      onClick: () => {
-        window.location.hash = `#${path}`;
-      },
+      icon: createElement(icon),
+      current: path === getCurrentPath(),
     });
-    const { detach } = attachTooltip(button, {
+    const { detach } = attachTooltip(link, {
       text: () => (isCollapsed() ? t(key) : ""),
       placement: "right",
     });
     detachTooltips.push(detach);
-    items.push({ button, path });
-    content.append(button);
+    items.push({ link, path });
+    content.append(link);
   }
 
-  const syncPressed = (): void => {
+  const syncCurrent = (): void => {
     const current = getCurrentPath();
     for (const item of items) {
-      item.button.setAttribute("aria-pressed", String(item.path === current));
+      if (item.path === current) {
+        item.link.setAttribute("aria-current", "page");
+      } else {
+        item.link.removeAttribute("aria-current");
+      }
     }
   };
 
-  syncPressed();
-  window.addEventListener("hashchange", syncPressed, { signal: controller.signal });
+  syncCurrent();
+  window.addEventListener("hashchange", syncCurrent, { signal: controller.signal });
 
   return {
     el: content,
