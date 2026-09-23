@@ -1,6 +1,6 @@
 import { initLanguage } from "@/shared/i18n";
 import { initTheme } from "@/shared/lib";
-import { Sidebar } from "@/shared/ui";
+import { Sidebar } from "./layouts";
 import { initRouter } from "./router";
 
 initTheme();

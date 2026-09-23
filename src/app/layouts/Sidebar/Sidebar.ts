@@ -1,10 +1,9 @@
 import { FlaskConical, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Settings, createElement } from "lucide";
 import type { IconNode } from "lucide";
 import "./Sidebar.css";
-import { t } from "../../i18n";
-import { getCurrentPath } from "../../lib";
-import { Button } from "../Button";
-import { SettingsDialog } from "../SettingsDialog";
+import { t } from "@/shared/i18n";
+import { getCurrentPath } from "@/shared/lib";
+import { Button, SettingsDialog } from "@/shared/ui";
 
 const LINKS: { path: string; key: string; icon: IconNode }[] = [
   { path: "/", key: "dashboard", icon: LayoutDashboard },
