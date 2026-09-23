@@ -28,6 +28,14 @@
   opacity: var(--state-press);
 }
 
+.button[aria-expanded="true"] {
+  color: var(--foreground);
+}
+
+.button[aria-expanded="true"]::after {
+  opacity: var(--state-press);
+}
+
 .button svg {
   flex-shrink: 0;
   width: 20px;

@@ -19,7 +19,7 @@ const SECTIONS: Section[] = [
   { id: "appearance", key: "appearance", icon: Palette, render: () => ThemeSwitcher() },
 ];
 
-export function SettingsDialog(): HTMLElement {
+export function SettingsDialog(options?: { onClose?: () => void }): HTMLElement {
   const layout = document.createElement("div");
   layout.className = "settings-dialog";
 
@@ -56,5 +56,5 @@ export function SettingsDialog(): HTMLElement {
   layout.append(nav, content);
   showSection(SECTIONS[0].id);
 
-  return Modal({ titleKey: "setting", body: layout });
+  return Modal({ titleKey: "setting", body: layout, onClose: options?.onClose });
 }
