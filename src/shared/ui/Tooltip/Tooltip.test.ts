@@ -1,20 +1,32 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { TOOLTIP_GRACE_PERIOD, TOOLTIP_SHOW_DELAY } from "./Tooltip";
 import { attachTooltip } from "./Tooltip";
 
 function tips(): number {
   return document.body.querySelectorAll(".tooltip").length;
 }
 
+beforeEach(() => {
+  vi.useFakeTimers();
+  vi.setSystemTime(1_000_000);
+});
+
 afterEach(() => {
   document.body.querySelectorAll(".tooltip").forEach((tip) => tip.remove());
+  vi.useRealTimers();
 });
+
+function hover(trigger: HTMLElement): void {
+  trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+  vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
+}
 
 describe("attachTooltip", () => {
   it("shows tooltip on hover with describedby link", () => {
     const trigger = document.createElement("button");
     document.body.append(trigger);
     const { detach } = attachTooltip(trigger, { text: "Expand" });
-    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    hover(trigger);
     expect(tips()).toBe(1);
     const tip = document.body.querySelector(".tooltip");
     expect(tip?.textContent).toBe("Expand");
@@ -28,7 +40,7 @@ describe("attachTooltip", () => {
     const trigger = document.createElement("button");
     document.body.append(trigger);
     const { detach } = attachTooltip(trigger, { text: "Expand" });
-    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    hover(trigger);
     trigger.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
     expect(tips()).toBe(0);
     expect(trigger.hasAttribute("aria-describedby")).toBe(false);
@@ -40,7 +52,7 @@ describe("attachTooltip", () => {
     const trigger = document.createElement("button");
     document.body.append(trigger);
     const { detach } = attachTooltip(trigger, { text: "Expand" });
-    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    hover(trigger);
     window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
     expect(tips()).toBe(0);
     detach();
@@ -52,11 +64,11 @@ describe("attachTooltip", () => {
     const trigger = document.createElement("button");
     document.body.append(trigger);
     const { detach } = attachTooltip(trigger, { text: () => label });
-    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    hover(trigger);
     expect(document.body.querySelector(".tooltip")?.textContent).toBe("Collapse");
     trigger.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
     label = "Expand";
-    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    hover(trigger);
     expect(document.body.querySelector(".tooltip")?.textContent).toBe("Expand");
     detach();
     trigger.remove();
@@ -67,7 +79,7 @@ describe("attachTooltip", () => {
     const trigger = document.createElement("button");
     document.body.append(trigger);
     const { detach, refresh } = attachTooltip(trigger, { text: () => label });
-    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    hover(trigger);
     label = "Expand";
     refresh();
     expect(document.body.querySelector(".tooltip")?.textContent).toBe("Expand");
@@ -87,17 +99,89 @@ describe("attachTooltip", () => {
       },
     });
     expect(calls).toBe(0);
-    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    hover(trigger);
     expect(calls).toBeGreaterThanOrEqual(1);
     detach();
     trigger.remove();
+  });
+
+  it("hides tooltip on click while hovering", () => {
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    const { detach } = attachTooltip(trigger, { text: "Expand" });
+    hover(trigger);
+    expect(tips()).toBe(1);
+    trigger.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    expect(tips()).toBe(0);
+    detach();
+    trigger.remove();
+  });
+
+  it("waits for delay before showing", () => {
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    const { detach } = attachTooltip(trigger, { text: "Expand" });
+    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    expect(tips()).toBe(0);
+    vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
+    expect(tips()).toBe(1);
+    detach();
+    trigger.remove();
+  });
+
+  it("cancels pending show when leaving early", () => {
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    const { detach } = attachTooltip(trigger, { text: "Expand" });
+    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    trigger.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
+    vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
+    expect(tips()).toBe(0);
+    detach();
+    trigger.remove();
+  });
+
+  it("shows immediately when hovering within grace period", () => {
+    const first = document.createElement("button");
+    const second = document.createElement("button");
+    document.body.append(first, second);
+    const a = attachTooltip(first, { text: "A" });
+    const b = attachTooltip(second, { text: "B" });
+    hover(first);
+    expect(tips()).toBe(1);
+    first.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
+    second.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    expect(document.body.querySelector(".tooltip")?.textContent).toBe("B");
+    a.detach();
+    b.detach();
+    first.remove();
+    second.remove();
+  });
+
+  it("waits full delay after grace period expires", () => {
+    const first = document.createElement("button");
+    const second = document.createElement("button");
+    document.body.append(first, second);
+    const a = attachTooltip(first, { text: "A" });
+    const b = attachTooltip(second, { text: "B" });
+    hover(first);
+    first.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
+    vi.advanceTimersByTime(TOOLTIP_GRACE_PERIOD);
+    second.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    expect(tips()).toBe(0);
+    vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
+    expect(tips()).toBe(1);
+    a.detach();
+    b.detach();
+    first.remove();
+    second.remove();
   });
 
   it("removes listeners on detach", () => {    const trigger = document.createElement("button");
     document.body.append(trigger);
     const { detach } = attachTooltip(trigger, { text: "Expand" });
     detach();
-    trigger.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    hover(trigger);
     expect(tips()).toBe(0);
     trigger.remove();
   });

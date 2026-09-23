@@ -9,7 +9,11 @@ export function CollapseButton(): View {
     icon: createElement(PanelLeftClose),
     label: "Collapse sidebar",
     hideLabel: true,
-    onClick: () => setCollapsed(!isCollapsed()),
+    onClick: () => {
+      setCollapsed(!isCollapsed());
+      // hide-on-click fires during dispatch, so re-show after it.
+      queueMicrotask(() => tooltip.show());
+    },
   });
 
   const tooltip = attachTooltip(button, {

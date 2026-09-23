@@ -3,7 +3,8 @@ import type { IconNode } from "lucide";
 import { t } from "@/shared/i18n";
 import { getCurrentPath } from "@/shared/lib";
 import type { View } from "@/shared/lib";
-import { Button } from "@/shared/ui";
+import { Button, attachTooltip } from "@/shared/ui";
+import { isCollapsed } from "./collapse";
 
 interface NavLink {
   path: string;
@@ -22,6 +23,7 @@ export function NavLinks(): View {
   content.className = "sidebar-content";
 
   const items: { button: HTMLButtonElement; path: string }[] = [];
+  const detachTooltips: (() => void)[] = [];
 
   for (const { path, key, icon } of LINKS) {
     const button = Button({
@@ -33,6 +35,11 @@ export function NavLinks(): View {
         window.location.hash = `#${path}`;
       },
     });
+    const { detach } = attachTooltip(button, {
+      text: () => (isCollapsed() ? t(key) : ""),
+      placement: "right",
+    });
+    detachTooltips.push(detach);
     items.push({ button, path });
     content.append(button);
   }
@@ -47,5 +54,13 @@ export function NavLinks(): View {
   syncPressed();
   window.addEventListener("hashchange", syncPressed, { signal: controller.signal });
 
-  return { el: content, destroy: () => controller.abort() };
+  return {
+    el: content,
+    destroy: () => {
+      controller.abort();
+      for (const detach of detachTooltips) {
+        detach();
+      }
+    },
+  };
 }
