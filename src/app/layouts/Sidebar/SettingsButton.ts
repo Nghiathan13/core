@@ -1,11 +1,11 @@
 import { Settings, createElement } from "lucide";
 import { t } from "@/shared/i18n";
 import type { View } from "@/shared/lib";
-import { Button, SettingsDialog, attachTooltip } from "@/shared/ui";
+import { Button, SettingsModal, attachTooltip } from "@/shared/ui";
 import { isCollapsed } from "./collapse";
 
 export function SettingsButton(): View {
-  let openDialog: HTMLElement | null = null;
+  let openModal: HTMLElement | null = null;
 
   const button = Button({
     icon: createElement(Settings),
@@ -14,16 +14,16 @@ export function SettingsButton(): View {
     hasPopup: "dialog",
     expanded: false,
     onClick: () => {
-      if (openDialog?.isConnected) {
+      if (openModal?.isConnected) {
         return;
       }
-      openDialog = SettingsDialog({
+      openModal = SettingsModal({
         onClose: () => {
-          openDialog = null;
+          openModal = null;
           button.setAttribute("aria-expanded", "false");
         },
       });
-      document.body.append(openDialog);
+      document.body.append(openModal);
       button.setAttribute("aria-expanded", "true");
     },
   });
@@ -36,8 +36,8 @@ export function SettingsButton(): View {
     el: button,
     destroy: () => {
       detach();
-      openDialog?.remove();
-      openDialog = null;
+      openModal?.remove();
+      openModal = null;
     },
   };
 }

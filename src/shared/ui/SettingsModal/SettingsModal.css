@@ -1,10 +1,10 @@
-.settings-dialog {
+.settings-modal {
   --settings-nav-width: 153px;
 
   display: flex;
 }
 
-.settings-dialog-nav {
+.settings-modal-nav {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -15,7 +15,7 @@
   border-right: var(--border-width) solid var(--border);
 }
 
-.settings-dialog-content {
+.settings-modal-content {
   flex: 1;
   padding: 16px;
 }
@@ -26,6 +26,6 @@
   line-height: var(--text-lg--line-height);
 }
 
-.settings-dialog-content > section + section {
+.settings-modal-content > section + section {
   margin-top: 16px;
 }

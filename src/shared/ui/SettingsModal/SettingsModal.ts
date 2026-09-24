@@ -6,7 +6,7 @@ import { Button } from "../Button";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 import { Modal } from "../Modal";
 import { ThemeSwitcher } from "../ThemeSwitcher";
-import "./SettingsDialog.css";
+import "./SettingsModal.css";
 
 interface Section {
   id: string;
@@ -20,15 +20,15 @@ const SECTIONS: Section[] = [
   { id: "appearance", key: "appearance", icon: Palette, render: () => ThemeSwitcher() },
 ];
 
-export function SettingsDialog(options?: { onClose?: () => void }): HTMLElement {
+export function SettingsModal(options?: { onClose?: () => void }): HTMLElement {
   const layout = document.createElement("div");
-  layout.className = "settings-dialog";
+  layout.className = "settings-modal";
 
   const nav = document.createElement("nav");
-  nav.className = "settings-dialog-nav";
+  nav.className = "settings-modal-nav";
 
   const content = document.createElement("div");
-  content.className = "settings-dialog-content";
+  content.className = "settings-modal-content";
 
   const items: { button: HTMLButtonElement; id: string }[] = [];
   let contentDestroy: (() => void) | undefined;
