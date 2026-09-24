@@ -1,11 +1,8 @@
 import { Palette, Settings, createElement } from "lucide";
 import type { IconNode } from "lucide";
-import { t } from "../../i18n";
-import type { View } from "../../lib";
-import { Button } from "../Button";
-import { LanguageSwitcher } from "../LanguageSwitcher";
-import { Modal } from "../Modal";
-import { ThemeSwitcher } from "../ThemeSwitcher";
+import { t } from "@/shared/i18n";
+import type { View } from "@/shared/lib";
+import { Button, LanguageSwitcher, Modal, ThemeSwitcher } from "@/shared/ui";
 import "./SettingsModal.css";
 
 interface Section {

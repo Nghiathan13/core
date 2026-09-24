@@ -3,7 +3,6 @@ export { Dropdown } from "./Dropdown";
 export type { DropdownOption, DropdownView } from "./Dropdown";
 export { LanguageSwitcher } from "./LanguageSwitcher";
 export { Modal } from "./Modal";
-export { SettingsModal } from "./SettingsModal";
 export { TabButton } from "./TabButton";
 export { ThemeSwitcher } from "./ThemeSwitcher";
 export { TOOLTIP_GRACE_PERIOD, TOOLTIP_SHOW_DELAY, attachTooltip } from "./Tooltip";

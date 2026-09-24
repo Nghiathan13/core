@@ -1,8 +1,9 @@
 import { Settings, createElement } from "lucide";
 import { t } from "@/shared/i18n";
 import type { View } from "@/shared/lib";
-import { Button, SettingsModal, attachTooltip } from "@/shared/ui";
+import { Button, attachTooltip } from "@/shared/ui";
 import { isCollapsed } from "./collapse";
+import { SettingsModal } from "./SettingsModal";
 
 export function SettingsButton(): View {
   let openModal: HTMLElement | null = null;
