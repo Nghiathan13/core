@@ -20,6 +20,12 @@
   padding: 16px;
 }
 
+.settings-section-header {
+  margin: 0 0 16px;
+  font-size: var(--text-lg);
+  line-height: var(--text-lg--line-height);
+}
+
 .settings-dialog-content > section + section {
   margin-top: 16px;
 }

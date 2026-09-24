@@ -1,40 +1,41 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { setLanguage } from "../../i18n";
-import { TOOLTIP_SHOW_DELAY } from "../Tooltip";
+import { afterEach, describe, expect, it } from "vitest";
+import { getLanguage, setLanguage } from "../../i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
-beforeEach(() => {
-  vi.useFakeTimers();
-  vi.setSystemTime(1_000_000);
-});
-
 afterEach(() => {
-  document.body.querySelectorAll(".tooltip").forEach((tip) => tip.remove());
-  document.body.querySelectorAll("section").forEach((el) => el.remove());
-  vi.useRealTimers();
+  document.body.innerHTML = "";
 });
 
-describe("LanguageSwitcher tooltips", () => {
-  it("shows language name on hover", () => {
+describe("LanguageSwitcher dropdown", () => {
+  it("renders General header and Language subheader", () => {
     setLanguage("en");
     const view = LanguageSwitcher();
     document.body.append(view.el);
-    const first = view.el.querySelector("button");
-    first?.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
-    vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
-    expect(document.body.querySelector(".tooltip")?.textContent).toBe("Vietnamese");
+    expect(view.el.querySelector(".settings-section-header")?.textContent).toBe("General");
+    expect(view.el.querySelector(".language-switcher-title")?.textContent).toBe("Language");
+    expect(view.el.querySelector(".dropdown-trigger")).not.toBeNull();
     view.destroy?.();
   });
 
-  it("detaches tooltips on destroy", () => {
+  it("changes language by selecting dropdown option", () => {
+    setLanguage("vi");
+    const view = LanguageSwitcher();
+    document.body.append(view.el);
+    view.el.querySelector<HTMLButtonElement>(".dropdown-trigger")?.click();
+    const options = [...document.body.querySelectorAll<HTMLButtonElement>(".dropdown-option")];
+    expect(options.length).toBe(2);
+    options.find((item) => item.dataset.value === "en")?.click();
+    expect(getLanguage()).toBe("en");
+    view.destroy?.();
+  });
+
+  it("removes dropdown menu on destroy", () => {
     setLanguage("en");
     const view = LanguageSwitcher();
     document.body.append(view.el);
+    view.el.querySelector<HTMLButtonElement>(".dropdown-trigger")?.click();
+    expect(document.body.querySelector(".dropdown-menu")).not.toBeNull();
     view.destroy?.();
-    const first = view.el.querySelector("button");
-    first?.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
-    vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
-    expect(document.body.querySelectorAll(".tooltip").length).toBe(0);
-    view.el.remove();
+    expect(document.body.querySelector(".dropdown-menu")).toBeNull();
   });
 });

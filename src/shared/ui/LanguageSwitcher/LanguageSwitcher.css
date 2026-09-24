@@ -1,8 +1,5 @@
-.language-switcher {
-  display: flex;
-  gap: 8px;
-}
-
 .language-switcher-title {
   margin: 0 0 8px;
+  font-size: var(--text-md);
+  line-height: var(--text-md--line-height);
 }

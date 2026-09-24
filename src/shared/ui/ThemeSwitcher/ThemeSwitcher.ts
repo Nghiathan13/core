@@ -16,7 +16,12 @@ const MODES: { mode: ThemeMode; icon: IconNode }[] = [
 export function ThemeSwitcher(): View {
   const section = document.createElement("section");
 
-  const heading = document.createElement("h2");
+  const header = document.createElement("h2");
+  header.className = "settings-section-header";
+  header.textContent = t("appearance");
+  header.setAttribute("data-i18n", "appearance");
+
+  const heading = document.createElement("h3");
   heading.className = "theme-switcher-title";
   heading.textContent = t("theme");
   heading.setAttribute("data-i18n", "theme");
@@ -46,7 +51,7 @@ export function ThemeSwitcher(): View {
     group.append(button);
   }
 
-  section.append(heading, group);
+  section.append(header, heading, group);
 
   return {
     el: section,
