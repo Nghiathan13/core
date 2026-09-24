@@ -1,10 +1,11 @@
-import { getLanguage, setLanguage, t } from "../../i18n";
-import type { Language } from "../../i18n";
+import { getLanguageMode, setLanguageMode, t } from "../../i18n";
+import type { LanguageMode } from "../../i18n";
 import type { View } from "../../lib";
 import { Dropdown } from "../Dropdown";
 import "./LanguageSwitcher.css";
 
-const LANGUAGES: { code: Language; label: string }[] = [
+const LANGUAGES: { code: LanguageMode; label: string }[] = [
+  { code: "system", label: "Auto detect" },
   { code: "vi", label: "Tiếng Việt" },
   { code: "en", label: "English" },
 ];
@@ -25,9 +26,9 @@ export function LanguageSwitcher(): View {
   const dropdown = Dropdown({
     label: t("language"),
     options: LANGUAGES.map(({ code, label }) => ({ value: code, label })),
-    value: getLanguage(),
-    onSelect: (code) => {
-      setLanguage(code);
+    value: getLanguageMode(),
+    onSelect: (code: LanguageMode) => {
+      setLanguageMode(code);
     },
   });
 

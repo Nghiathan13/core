@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { getLanguage, setLanguage } from "../../i18n";
+import { getLanguage, getLanguageMode, setLanguage } from "../../i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 afterEach(() => {
@@ -17,15 +17,38 @@ describe("LanguageSwitcher dropdown", () => {
     view.destroy?.();
   });
 
+  it("lists auto detect plus fixed native names", () => {
+    setLanguage("en");
+    const view = LanguageSwitcher();
+    document.body.append(view.el);
+    view.el.querySelector<HTMLButtonElement>(".dropdown-trigger")?.click();
+    const options = [...document.body.querySelectorAll<HTMLButtonElement>(".dropdown-option")];
+    expect(options.map((item) => item.dataset.value)).toEqual(["system", "vi", "en"]);
+    expect(options.map((item) => item.textContent)).toEqual(["Auto detect", "Tiếng Việt", "English"]);
+    view.destroy?.();
+  });
+
   it("changes language by selecting dropdown option", () => {
     setLanguage("vi");
     const view = LanguageSwitcher();
     document.body.append(view.el);
     view.el.querySelector<HTMLButtonElement>(".dropdown-trigger")?.click();
     const options = [...document.body.querySelectorAll<HTMLButtonElement>(".dropdown-option")];
-    expect(options.length).toBe(2);
+    expect(options.length).toBe(3);
     options.find((item) => item.dataset.value === "en")?.click();
     expect(getLanguage()).toBe("en");
+    view.destroy?.();
+  });
+
+  it("selects auto detect mode", () => {
+    setLanguage("en");
+    const view = LanguageSwitcher();
+    document.body.append(view.el);
+    view.el.querySelector<HTMLButtonElement>(".dropdown-trigger")?.click();
+    [...document.body.querySelectorAll<HTMLButtonElement>(".dropdown-option")]
+      .find((item) => item.dataset.value === "system")
+      ?.click();
+    expect(getLanguageMode()).toBe("system");
     view.destroy?.();
   });
 
