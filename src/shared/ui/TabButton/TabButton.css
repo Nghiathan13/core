@@ -2,10 +2,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
   color: var(--foreground);
-  border: var(--border-width) solid var(--border);
   cursor: pointer;
+  background: transparent;
+  border: var(--border-width) solid var(--border);
 }
 
 .tab-button:focus-visible {
@@ -13,6 +13,6 @@
 }
 
 .tab-button[aria-pressed="true"] {
-  background: var(--foreground);
   color: var(--background);
+  background: var(--foreground);
 }

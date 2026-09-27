@@ -5,9 +5,9 @@
 .dropdown-trigger {
   justify-content: space-between;
   min-width: 160px;
+  color: var(--foreground);
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-md);
-  color: var(--foreground);
 }
 
 .dropdown-trigger[aria-expanded="true"] {
@@ -28,8 +28,8 @@
 
 .dropdown-menu {
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
   z-index: 1000;
   min-width: 160px;
   padding: 4px;
@@ -40,19 +40,19 @@
 
 .dropdown-option {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   width: 100%;
   padding: 8px;
-  background: transparent;
-  color: var(--foreground-muted);
-  border: 0;
-  border-radius: var(--radius-sm);
   font-size: var(--text-sm);
   line-height: var(--leading-sm);
+  color: var(--foreground-muted);
+  text-align: start;
   white-space: nowrap;
   cursor: pointer;
-  text-align: start;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
 }
 
 .dropdown-option:hover {
@@ -64,8 +64,8 @@
 }
 
 .dropdown-option[aria-selected="true"] {
-  background: transparent;
   color: var(--foreground);
+  background: transparent;
 }
 
 .dropdown-tick {

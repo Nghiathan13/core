@@ -1,16 +1,16 @@
 .button {
   display: inline-flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
   height: 36px;
   padding: 8px;
-  border: 0;
-  background: transparent;
   color: var(--foreground-muted);
-  border-radius: var(--radius-md);
-  cursor: pointer;
   white-space: nowrap;
   text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
 }
 
 .button:focus-visible {

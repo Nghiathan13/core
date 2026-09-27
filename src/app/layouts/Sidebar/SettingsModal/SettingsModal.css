@@ -6,8 +6,8 @@
 
 .settings-modal-nav {
   display: flex;
-  flex-direction: column;
   flex-shrink: 0;
+  flex-direction: column;
   gap: 4px;
   width: var(--settings-nav-width);
   padding: 8px;

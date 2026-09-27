@@ -1,18 +1,18 @@
 .tooltip {
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
   max-width: 240px;
   height: 24px;
   padding: 4px 8px;
-  background: var(--tooltip-background);
-  color: var(--foreground);
   font-size: var(--text-xs);
   line-height: var(--leading-xs);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-sm);
+  color: var(--foreground);
   white-space: nowrap;
   pointer-events: none;
+  background: var(--tooltip-background);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
   animation: tooltip-in var(--duration-tooltip) var(--easing-standard);
 }
 

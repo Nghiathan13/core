@@ -8,8 +8,8 @@ main {
 }
 
 body.resizing {
-  user-select: none;
   cursor: ew-resize;
+  user-select: none;
 }
 
 body.resizing .sidebar,
