@@ -28,6 +28,8 @@
     "lucide": "^1.47.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
     "@eslint/eslintrc": "^3.3.7",
     "@feature-sliced/eslint-config": "^0.1.1",
     "@feature-sliced/steiger-plugin": "^0.7.0",
