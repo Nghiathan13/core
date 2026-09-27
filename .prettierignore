@@ -1,0 +1,9 @@
+# generated / third-party
+.agents
+dist
+coverage
+pnpm-lock.yaml
+src-tauri
+
+# generated docs (source of truth is the script, not this file)
+docs/architecture-frontend.md

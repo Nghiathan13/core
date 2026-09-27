@@ -1,7 +1,15 @@
 import { t } from "@/shared/i18n";
 import type { View } from "@/shared/lib";
 import { isCollapsed, setCollapsed, subscribeCollapse } from "./collapse";
-import { COLLAPSED_WIDTH, DEFAULT_WIDTH, MIN_WIDTH, clampWidth, computeLiveWidth, maxWidth, shouldSnapCollapse } from "./width";
+import {
+  COLLAPSED_WIDTH,
+  DEFAULT_WIDTH,
+  MIN_WIDTH,
+  clampWidth,
+  computeLiveWidth,
+  maxWidth,
+  shouldSnapCollapse,
+} from "./width";
 
 const DRAG_THRESHOLD = 4;
 const KEYBOARD_STEP = 16;
@@ -11,7 +19,10 @@ export function ResizeHandle(nav: HTMLElement): View {
   let preferredWidth = DEFAULT_WIDTH;
 
   const applyWidth = (): void => {
-    document.body.style.setProperty("--sidebar-width", `${clampWidth(preferredWidth, window.innerWidth)}px`);
+    document.body.style.setProperty(
+      "--sidebar-width",
+      `${clampWidth(preferredWidth, window.innerWidth)}px`,
+    );
   };
 
   const unsubscribeWidth = subscribeCollapse(() => {
@@ -33,9 +44,14 @@ export function ResizeHandle(nav: HTMLElement): View {
 
   const syncAria = (): void => {
     const viewportWidth = window.innerWidth;
-    const current = isCollapsed() ? COLLAPSED_WIDTH : clampWidth(preferredWidth, viewportWidth);
+    const current = isCollapsed()
+      ? COLLAPSED_WIDTH
+      : clampWidth(preferredWidth, viewportWidth);
     handle.setAttribute("aria-valuemin", String(COLLAPSED_WIDTH));
-    handle.setAttribute("aria-valuemax", String(Math.round(maxWidth(viewportWidth))));
+    handle.setAttribute(
+      "aria-valuemax",
+      String(Math.round(maxWidth(viewportWidth))),
+    );
     handle.setAttribute("aria-valuenow", String(Math.round(current)));
   };
   syncAria();
@@ -144,7 +160,10 @@ export function ResizeHandle(nav: HTMLElement): View {
       setCollapsed(true);
       return;
     }
-    preferredWidth = clampWidth(current + (event.key === "ArrowLeft" ? -KEYBOARD_STEP : KEYBOARD_STEP), viewportWidth);
+    preferredWidth = clampWidth(
+      current + (event.key === "ArrowLeft" ? -KEYBOARD_STEP : KEYBOARD_STEP),
+      viewportWidth,
+    );
     applyWidth();
     syncAria();
   });

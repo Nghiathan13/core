@@ -1,5 +1,9 @@
 import "./Tooltip.css";
-import { TOOLTIP_ARROW_SIZE, computeArrowOffset, computePlacement } from "./position";
+import {
+  TOOLTIP_ARROW_SIZE,
+  computeArrowOffset,
+  computePlacement,
+} from "./position";
 import type { TooltipPlacement } from "./position";
 
 interface TooltipOptions {
@@ -42,7 +46,10 @@ function bindGlobals(): void {
   window.addEventListener("resize", () => active?.place());
 }
 
-export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): TooltipHandle {
+export function attachTooltip(
+  trigger: HTMLElement,
+  options: TooltipOptions,
+): TooltipHandle {
   const delay = options.delay ?? TOOLTIP_SHOW_DELAY;
   let tip: HTMLElement | null = null;
   let label: HTMLElement | null = null;
@@ -50,10 +57,13 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
   let timer: ReturnType<typeof setTimeout> | undefined;
   let pressed = false;
 
-  const resolveText = (): string => (typeof options.text === "function" ? options.text() : options.text);
+  const resolveText = (): string =>
+    typeof options.text === "function" ? options.text() : options.text;
 
   const resolvePlacement = (): TooltipPlacement =>
-    typeof options.placement === "function" ? options.placement() : (options.placement ?? "top");
+    typeof options.placement === "function"
+      ? options.placement()
+      : (options.placement ?? "top");
 
   const place = (): void => {
     if (!tip || !arrow || !label) {
@@ -72,11 +82,19 @@ export function attachTooltip(trigger: HTMLElement, options: TooltipOptions): To
     tip.dataset.placement = placed.placement;
     const half = TOOLTIP_ARROW_SIZE / 2;
     if (placed.placement === "top" || placed.placement === "bottom") {
-      const offset = computeArrowOffset(rect.x + rect.width / 2, placed.x, size.width);
+      const offset = computeArrowOffset(
+        rect.x + rect.width / 2,
+        placed.x,
+        size.width,
+      );
       arrow.style.left = `${offset - half}px`;
       arrow.style.top = "";
     } else {
-      const offset = computeArrowOffset(rect.y + rect.height / 2, placed.y, size.height);
+      const offset = computeArrowOffset(
+        rect.y + rect.height / 2,
+        placed.y,
+        size.height,
+      );
       arrow.style.top = `${offset - half}px`;
       arrow.style.left = "";
     }

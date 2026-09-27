@@ -12,7 +12,10 @@ let current: Language = "en";
 let listenerBound = false;
 
 function systemLanguage(): Language {
-  const candidates = [...(window.navigator.languages ?? []), window.navigator.language];
+  const candidates = [
+    ...(window.navigator.languages ?? []),
+    window.navigator.language,
+  ];
   for (const tag of candidates) {
     if (tag.toLowerCase().startsWith("vi")) {
       return "vi";

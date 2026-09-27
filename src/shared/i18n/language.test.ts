@@ -10,11 +10,17 @@ import {
 } from "./language";
 
 function mockNavigatorLanguage(value: string): void {
-  Object.defineProperty(window.navigator, "language", { value, configurable: true });
+  Object.defineProperty(window.navigator, "language", {
+    value,
+    configurable: true,
+  });
 }
 
 function mockNavigatorLanguages(value: readonly string[] | undefined): void {
-  Object.defineProperty(window.navigator, "languages", { value, configurable: true });
+  Object.defineProperty(window.navigator, "languages", {
+    value,
+    configurable: true,
+  });
 }
 
 describe("language", () => {

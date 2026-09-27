@@ -7,7 +7,12 @@ interface NavLinkOptions {
   current?: boolean;
 }
 
-export function NavLink({ path, i18nKey, icon, current }: NavLinkOptions): HTMLAnchorElement {
+export function NavLink({
+  path,
+  i18nKey,
+  icon,
+  current,
+}: NavLinkOptions): HTMLAnchorElement {
   const link = document.createElement("a");
   link.className = "button state-layer";
   link.href = `#${path}`;

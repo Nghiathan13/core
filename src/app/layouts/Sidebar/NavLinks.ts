@@ -54,7 +54,9 @@ export function NavLinks(): View {
   };
 
   syncCurrent();
-  window.addEventListener("hashchange", syncCurrent, { signal: controller.signal });
+  window.addEventListener("hashchange", syncCurrent, {
+    signal: controller.signal,
+  });
 
   return {
     el: content,

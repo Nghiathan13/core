@@ -11,7 +11,16 @@ interface ButtonOptions {
   onClick?: () => void;
 }
 
-export function Button({ icon, label, hideLabel, i18nKey, selected, expanded, hasPopup, onClick }: ButtonOptions): HTMLButtonElement {
+export function Button({
+  icon,
+  label,
+  hideLabel,
+  i18nKey,
+  selected,
+  expanded,
+  hasPopup,
+  onClick,
+}: ButtonOptions): HTMLButtonElement {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "button state-layer";

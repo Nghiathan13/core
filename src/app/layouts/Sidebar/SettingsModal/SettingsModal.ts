@@ -14,8 +14,18 @@ interface Section {
 }
 
 const SECTIONS: Section[] = [
-  { id: "general", key: "general", icon: Settings, render: () => LanguageSwitcher() },
-  { id: "appearance", key: "appearance", icon: Palette, render: () => ThemeSwitcher() },
+  {
+    id: "general",
+    key: "general",
+    icon: Settings,
+    render: () => LanguageSwitcher(),
+  },
+  {
+    id: "appearance",
+    key: "appearance",
+    icon: Palette,
+    render: () => ThemeSwitcher(),
+  },
 ];
 
 export function SettingsModal(options?: { onClose?: () => void }): HTMLElement {

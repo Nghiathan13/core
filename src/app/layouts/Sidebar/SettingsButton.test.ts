@@ -6,7 +6,9 @@ function openOverlays(): number {
 }
 
 afterEach(() => {
-  document.body.querySelectorAll(".modal-overlay").forEach((overlay) => overlay.remove());
+  document.body
+    .querySelectorAll(".modal-overlay")
+    .forEach((overlay) => overlay.remove());
 });
 
 describe("SettingsButton", () => {

@@ -24,8 +24,12 @@ describe("Dropdown", () => {
     });
     document.body.append(view.el);
     expect(view.getValue()).toBe("vi");
-    expect(view.el.querySelector(".dropdown-trigger")?.getAttribute("aria-expanded")).toBe("false");
-    expect(view.el.querySelector(".dropdown-trigger")?.getAttribute("aria-haspopup")).toBe("listbox");
+    expect(
+      view.el.querySelector(".dropdown-trigger")?.getAttribute("aria-expanded"),
+    ).toBe("false");
+    expect(
+      view.el.querySelector(".dropdown-trigger")?.getAttribute("aria-haspopup"),
+    ).toBe("listbox");
     view.destroy?.();
   });
 
@@ -41,11 +45,14 @@ describe("Dropdown", () => {
       onSelect,
     });
     document.body.append(view.el);
-    const trigger = view.el.querySelector<HTMLButtonElement>(".dropdown-trigger");
+    const trigger =
+      view.el.querySelector<HTMLButtonElement>(".dropdown-trigger");
     trigger?.click();
     const menu = document.body.querySelector(".dropdown-menu");
     expect(menu?.getAttribute("role")).toBe("listbox");
-    const options = [...document.body.querySelectorAll<HTMLButtonElement>(".dropdown-option")];
+    const options = [
+      ...document.body.querySelectorAll<HTMLButtonElement>(".dropdown-option"),
+    ];
     expect(options.length).toBe(2);
     options[1]?.click();
     expect(onSelect).toHaveBeenCalledWith("en");
@@ -68,9 +75,13 @@ describe("Dropdown", () => {
     document.body.append(view.el);
     view.el.querySelector<HTMLButtonElement>(".dropdown-trigger")?.click();
     expect(document.body.querySelector(".dropdown-menu")).not.toBeNull();
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+    );
     expect(document.body.querySelector(".dropdown-menu")).toBeNull();
-    expect(document.activeElement).toBe(view.el.querySelector(".dropdown-trigger"));
+    expect(document.activeElement).toBe(
+      view.el.querySelector(".dropdown-trigger"),
+    );
     view.destroy?.();
   });
 

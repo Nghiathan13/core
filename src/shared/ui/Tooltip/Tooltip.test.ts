@@ -65,7 +65,9 @@ describe("attachTooltip", () => {
     document.body.append(trigger);
     const { detach } = attachTooltip(trigger, { text: () => label });
     hover(trigger);
-    expect(document.body.querySelector(".tooltip")?.textContent).toBe("Collapse");
+    expect(document.body.querySelector(".tooltip")?.textContent).toBe(
+      "Collapse",
+    );
     trigger.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
     label = "Expand";
     hover(trigger);
@@ -193,10 +195,15 @@ describe("attachTooltip", () => {
   it("exposes actual placement for directional animation", () => {
     const trigger = document.createElement("button");
     document.body.append(trigger);
-    const { detach } = attachTooltip(trigger, { text: "Expand", placement: "bottom" });
+    const { detach } = attachTooltip(trigger, {
+      text: "Expand",
+      placement: "bottom",
+    });
     hover(trigger);
     const tip = document.body.querySelector(".tooltip");
-    expect(tip instanceof HTMLElement ? tip.dataset.placement : undefined).toBe("bottom");
+    expect(tip instanceof HTMLElement ? tip.dataset.placement : undefined).toBe(
+      "bottom",
+    );
     detach();
     trigger.remove();
   });
@@ -204,7 +211,10 @@ describe("attachTooltip", () => {
   it("renders arrow pointing at trigger", () => {
     const trigger = document.createElement("button");
     document.body.append(trigger);
-    const { detach } = attachTooltip(trigger, { text: "Expand", placement: "bottom" });
+    const { detach } = attachTooltip(trigger, {
+      text: "Expand",
+      placement: "bottom",
+    });
     hover(trigger);
     const arrow = document.body.querySelector(".tooltip-arrow");
     expect(arrow?.getAttribute("aria-hidden")).toBe("true");
@@ -213,7 +223,8 @@ describe("attachTooltip", () => {
     trigger.remove();
   });
 
-  it("removes listeners on detach", () => {    const trigger = document.createElement("button");
+  it("removes listeners on detach", () => {
+    const trigger = document.createElement("button");
     document.body.append(trigger);
     const { detach } = attachTooltip(trigger, { text: "Expand" });
     detach();

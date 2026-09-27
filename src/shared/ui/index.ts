@@ -4,5 +4,9 @@ export type { DropdownOption, DropdownView } from "./Dropdown";
 export { Modal } from "./Modal";
 export { TabButton } from "./TabButton";
 export { ThemeSwitcher } from "./ThemeSwitcher";
-export { TOOLTIP_GRACE_PERIOD, TOOLTIP_SHOW_DELAY, attachTooltip } from "./Tooltip";
+export {
+  TOOLTIP_GRACE_PERIOD,
+  TOOLTIP_SHOW_DELAY,
+  attachTooltip,
+} from "./Tooltip";
 export type { TooltipHandle, TooltipPlacement } from "./Tooltip";

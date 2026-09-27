@@ -26,7 +26,10 @@ function isView(node: HTMLElement | View): node is View {
   return !(node instanceof HTMLElement);
 }
 
-function mount(outlet: HTMLElement, node: HTMLElement | View): (() => void) | undefined {
+function mount(
+  outlet: HTMLElement,
+  node: HTMLElement | View,
+): (() => void) | undefined {
   if (isView(node)) {
     outlet.replaceChildren(node.el);
     return node.destroy;

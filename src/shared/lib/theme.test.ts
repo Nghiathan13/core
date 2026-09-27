@@ -4,7 +4,10 @@ import { getThemeMode, initTheme, setThemeMode } from "./theme";
 const mediaRecords: { listeners: (() => void)[]; dark: boolean }[] = [];
 
 function mockColorScheme(dark: boolean): void {
-  const record: { listeners: (() => void)[]; dark: boolean } = { listeners: [], dark };
+  const record: { listeners: (() => void)[]; dark: boolean } = {
+    listeners: [],
+    dark,
+  };
   mediaRecords.push(record);
   window.matchMedia = ((query: string) => ({
     matches: record.dark,

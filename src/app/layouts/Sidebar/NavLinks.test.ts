@@ -11,7 +11,9 @@ beforeEach(() => {
 
 afterEach(() => {
   document.body.querySelectorAll(".tooltip").forEach((tip) => tip.remove());
-  document.body.querySelectorAll(".sidebar-content").forEach((el) => el.remove());
+  document.body
+    .querySelectorAll(".sidebar-content")
+    .forEach((el) => el.remove());
   setCollapsed(false);
   vi.useRealTimers();
 });
@@ -25,7 +27,9 @@ describe("NavLinks tooltips", () => {
     const first = view.el.querySelector("a");
     first?.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
     vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
-    expect(document.body.querySelector(".tooltip")?.textContent).toBe("Dashboard");
+    expect(document.body.querySelector(".tooltip")?.textContent).toBe(
+      "Dashboard",
+    );
     view.destroy?.();
   });
 

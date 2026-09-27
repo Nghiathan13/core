@@ -46,7 +46,10 @@ export function ThemeSwitcher(): View {
         });
       },
     });
-    const { detach } = attachTooltip(button, { text: () => t(mode), placement: "top" });
+    const { detach } = attachTooltip(button, {
+      text: () => t(mode),
+      placement: "top",
+    });
     detachTooltips.push(detach);
     group.append(button);
   }

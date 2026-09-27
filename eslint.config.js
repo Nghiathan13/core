@@ -1,12 +1,14 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import tsParser from "@typescript-eslint/parser";
+import prettierConfig from "eslint-config-prettier";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
 const publicApi = require("@feature-sliced/eslint-config/rules/public-api");
-const [publicApiLevel, publicApiOptions] = publicApi.rules["import/no-internal-modules"];
+const [publicApiLevel, publicApiOptions] =
+  publicApi.rules["import/no-internal-modules"];
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,4 +53,6 @@ export default [
       ],
     },
   },
+  // Turn off stylistic rules that conflict with Prettier (must stay last).
+  prettierConfig,
 ];

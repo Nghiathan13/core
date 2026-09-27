@@ -23,13 +23,24 @@ export function CollapseButton(): View {
 
   const sync = (): void => {
     const collapsed = isCollapsed();
-    button.querySelector("svg")?.replaceWith(createElement(collapsed ? PanelLeftOpen : PanelLeftClose));
-    button.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+    button
+      .querySelector("svg")
+      ?.replaceWith(createElement(collapsed ? PanelLeftOpen : PanelLeftClose));
+    button.setAttribute(
+      "aria-label",
+      collapsed ? "Expand sidebar" : "Collapse sidebar",
+    );
     tooltip.refresh();
   };
 
   sync();
   const unsubscribe = subscribeCollapse(sync);
 
-  return { el: button, destroy: () => { unsubscribe(); tooltip.detach(); } };
+  return {
+    el: button,
+    destroy: () => {
+      unsubscribe();
+      tooltip.detach();
+    },
+  };
 }

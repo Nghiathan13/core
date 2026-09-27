@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { applySidebarWidthTokens, clampWidth, computeLiveWidth, maxWidth, shouldSnapCollapse } from "./width";
+import {
+  applySidebarWidthTokens,
+  clampWidth,
+  computeLiveWidth,
+  maxWidth,
+  shouldSnapCollapse,
+} from "./width";
 
 describe("maxWidth", () => {
   it("limits sidebar to 40% of viewport", () => {
@@ -50,6 +56,8 @@ describe("applySidebarWidthTokens", () => {
     const root = document.createElement("div");
     applySidebarWidthTokens(root);
     expect(root.style.getPropertyValue("--sidebar-width")).toBe("253px");
-    expect(root.style.getPropertyValue("--sidebar-collapsed-width")).toBe("53px");
+    expect(root.style.getPropertyValue("--sidebar-collapsed-width")).toBe(
+      "53px",
+    );
   });
 });

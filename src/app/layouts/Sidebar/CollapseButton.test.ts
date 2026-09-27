@@ -25,14 +25,18 @@ describe("CollapseButton tooltip", () => {
 
     button.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
     vi.advanceTimersByTime(TOOLTIP_SHOW_DELAY);
-    expect(document.body.querySelector(".tooltip")?.textContent).toBe("Collapse Sidebar");
+    expect(document.body.querySelector(".tooltip")?.textContent).toBe(
+      "Collapse Sidebar",
+    );
 
     button.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
     expect(document.body.querySelectorAll(".tooltip").length).toBe(0);
 
     button.click();
     await Promise.resolve();
-    expect(document.body.querySelector(".tooltip")?.textContent).toBe("Expand Sidebar");
+    expect(document.body.querySelector(".tooltip")?.textContent).toBe(
+      "Expand Sidebar",
+    );
 
     view.destroy?.();
   });
@@ -50,7 +54,9 @@ describe("CollapseButton tooltip", () => {
     button.click();
     await Promise.resolve();
     await Promise.resolve();
-    expect(document.body.querySelector(".tooltip")?.textContent).toBe("Expand Sidebar");
+    expect(document.body.querySelector(".tooltip")?.textContent).toBe(
+      "Expand Sidebar",
+    );
 
     view.destroy?.();
   });

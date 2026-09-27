@@ -25,7 +25,9 @@ export interface DropdownView<T extends string> extends View {
 const MENU_GAP = 4;
 const VIEWPORT_MARGIN = 8;
 
-function resolveDisplay<T extends string>(option: DropdownOption<T> | undefined): { text: string; i18nKey?: string } {
+function resolveDisplay<T extends string>(
+  option: DropdownOption<T> | undefined,
+): { text: string; i18nKey?: string } {
   if (!option) {
     return { text: "" };
   }
@@ -35,7 +37,12 @@ function resolveDisplay<T extends string>(option: DropdownOption<T> | undefined)
   return { text: option.label };
 }
 
-export function Dropdown<T extends string>({ label, options, value, onSelect }: DropdownParams<T>): DropdownView<T> {
+export function Dropdown<T extends string>({
+  label,
+  options,
+  value,
+  onSelect,
+}: DropdownParams<T>): DropdownView<T> {
   const controller = new AbortController();
   const signal = controller.signal;
 
@@ -108,7 +115,10 @@ export function Dropdown<T extends string>({ label, options, value, onSelect }: 
     const viewportHeight = window.innerHeight;
     const width = size.width || rect.width || 160;
     const height = size.height || 0;
-    const x = Math.min(Math.max(rect.x, VIEWPORT_MARGIN), Math.max(VIEWPORT_MARGIN, viewportWidth - width - VIEWPORT_MARGIN));
+    const x = Math.min(
+      Math.max(rect.x, VIEWPORT_MARGIN),
+      Math.max(VIEWPORT_MARGIN, viewportWidth - width - VIEWPORT_MARGIN),
+    );
     const below = rect.y + rect.height + MENU_GAP;
     const above = rect.y - height - MENU_GAP;
     const fitsBelow = below + height <= viewportHeight - VIEWPORT_MARGIN;
@@ -140,7 +150,10 @@ export function Dropdown<T extends string>({ label, options, value, onSelect }: 
 
   const syncSelected = (): void => {
     optionButtons.forEach((button) => {
-      button.setAttribute("aria-selected", String(button.dataset.value === current));
+      button.setAttribute(
+        "aria-selected",
+        String(button.dataset.value === current),
+      );
     });
   };
 
@@ -240,7 +253,8 @@ export function Dropdown<T extends string>({ label, options, value, onSelect }: 
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
         const delta = event.key === "ArrowDown" ? 1 : -1;
-        const next = (activeIndex + delta + optionButtons.length) % optionButtons.length;
+        const next =
+          (activeIndex + delta + optionButtons.length) % optionButtons.length;
         focusOption(next);
         return;
       }
@@ -255,7 +269,10 @@ export function Dropdown<T extends string>({ label, options, value, onSelect }: 
         return;
       }
       if (event.key === "Enter" || event.key === " ") {
-        const focused = document.activeElement instanceof HTMLButtonElement ? document.activeElement : null;
+        const focused =
+          document.activeElement instanceof HTMLButtonElement
+            ? document.activeElement
+            : null;
         const next = focused?.dataset.value;
         if (next && menu.contains(focused)) {
           event.preventDefault();

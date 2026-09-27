@@ -3,7 +3,11 @@ import { Button } from "./Button";
 
 describe("Button popup", () => {
   it("sets haspopup and expanded attributes", () => {
-    const button = Button({ label: "setting", hasPopup: "dialog", expanded: false });
+    const button = Button({
+      label: "setting",
+      hasPopup: "dialog",
+      expanded: false,
+    });
     expect(button.getAttribute("aria-haspopup")).toBe("dialog");
     expect(button.getAttribute("aria-expanded")).toBe("false");
   });

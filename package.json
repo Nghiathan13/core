@@ -9,12 +9,18 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "lint": "eslint src",
+    "lint:staged": "lint-staged",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "check:fsd": "steiger src",
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "docs:gen": "bash script/generate-frontend-architecture.sh",
     "prepare": "simple-git-hooks"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json,css,md}": "prettier --write"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
@@ -30,10 +36,13 @@
     "@typescript-eslint/parser": "^8.70.0",
     "@vitest/coverage-v8": "^5.0.1",
     "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-boundaries": "^7.2.0",
     "eslint-plugin-import": "^2.32.0",
     "happy-dom": "^20.14.5",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.9",
     "simple-git-hooks": "^2.14.0",
     "steiger": "^0.6.0",
     "typescript": "~6.0.3",

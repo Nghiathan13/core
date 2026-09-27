@@ -12,7 +12,7 @@ document.body.prepend(Sidebar().el);
 const outlet = document.querySelector<HTMLElement>("main");
 
 if (!outlet) {
-  throw new Error('<main> outlet not found');
+  throw new Error("<main> outlet not found");
 }
 
 initRouter(outlet);

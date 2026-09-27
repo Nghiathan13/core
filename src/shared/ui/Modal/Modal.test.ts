@@ -3,11 +3,20 @@ import { Dropdown } from "../Dropdown";
 import { Modal } from "./Modal";
 
 function pressKey(key: string, init?: KeyboardEventInit): void {
-  window.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, cancelable: true, key, ...init }));
+  window.dispatchEvent(
+    new KeyboardEvent("keydown", {
+      bubbles: true,
+      cancelable: true,
+      key,
+      ...init,
+    }),
+  );
 }
 
 afterEach(() => {
-  document.body.querySelectorAll(".modal-overlay, .dropdown-menu, .dropdown").forEach((overlay) => overlay.remove());
+  document.body
+    .querySelectorAll(".modal-overlay, .dropdown-menu, .dropdown")
+    .forEach((overlay) => overlay.remove());
 });
 
 describe("Modal focus", () => {
@@ -63,7 +72,9 @@ describe("Modal focus", () => {
 
   it("notifies onClose", () => {
     let closed = 0;
-    document.body.append(Modal({ titleKey: "setting", onClose: () => (closed += 1) }));
+    document.body.append(
+      Modal({ titleKey: "setting", onClose: () => (closed += 1) }),
+    );
     pressKey("Escape");
     expect(closed).toBe(1);
   });
@@ -90,7 +101,10 @@ describe("Modal stacked dismiss", () => {
   }
 
   it("keeps modal open when scrim click also dismisses dropdown", () => {
-    const overlay = Modal({ titleKey: "setting", body: document.createElement("div") });
+    const overlay = Modal({
+      titleKey: "setting",
+      body: document.createElement("div"),
+    });
     document.body.append(overlay);
     openDropdown();
     expect(document.body.querySelector(".dropdown-menu")).not.toBeNull();
@@ -102,10 +116,19 @@ describe("Modal stacked dismiss", () => {
   });
 
   it("keeps modal open when Escape dismisses dropdown", () => {
-    const overlay = Modal({ titleKey: "setting", body: document.createElement("div") });
+    const overlay = Modal({
+      titleKey: "setting",
+      body: document.createElement("div"),
+    });
     document.body.append(overlay);
     openDropdown();
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Escape",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
     expect(document.body.querySelector(".dropdown-menu")).toBeNull();
     expect(overlay.isConnected).toBe(true);
     pressKey("Escape");

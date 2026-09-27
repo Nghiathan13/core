@@ -25,12 +25,17 @@ export function Modal({ titleKey, body, onClose }: ModalOptions): HTMLElement {
 
   overlay.append(dialog);
 
-  const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  const previousFocus =
+    document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
 
   function focusables(): HTMLElement[] {
-    return [...dialog.querySelectorAll<HTMLElement>("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])")].filter(
-      (element) => !element.hasAttribute("disabled"),
-    );
+    return [
+      ...dialog.querySelectorAll<HTMLElement>(
+        "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])",
+      ),
+    ].filter((element) => !element.hasAttribute("disabled"));
   }
 
   function close(): void {
@@ -72,7 +77,9 @@ export function Modal({ titleKey, body, onClose }: ModalOptions): HTMLElement {
   // so it can never go stale. One gesture dismisses one layer.
   let consumeNextOverlayClick = false;
   overlay.addEventListener("pointerdown", (event) => {
-    consumeNextOverlayClick = event.target === overlay && document.querySelector(".dropdown-menu") !== null;
+    consumeNextOverlayClick =
+      event.target === overlay &&
+      document.querySelector(".dropdown-menu") !== null;
   });
   overlay.addEventListener("click", (event) => {
     if (event.target === overlay) {

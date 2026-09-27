@@ -8,7 +8,9 @@ function resolveTheme(mode: ThemeMode): EffectiveTheme {
   if (mode !== "system") {
     return mode;
   }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
 }
 
 function applyTheme(mode: ThemeMode): void {
