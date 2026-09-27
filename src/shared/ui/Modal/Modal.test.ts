@@ -1,4 +1,5 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { Dropdown } from "../Dropdown";
 import { Modal } from "./Modal";
 
 function pressKey(key: string, init?: KeyboardEventInit): void {
@@ -6,7 +7,7 @@ function pressKey(key: string, init?: KeyboardEventInit): void {
 }
 
 afterEach(() => {
-  document.body.querySelectorAll(".modal-overlay").forEach((overlay) => overlay.remove());
+  document.body.querySelectorAll(".modal-overlay, .dropdown-menu, .dropdown").forEach((overlay) => overlay.remove());
 });
 
 describe("Modal focus", () => {
@@ -65,5 +66,49 @@ describe("Modal focus", () => {
     document.body.append(Modal({ titleKey: "setting", onClose: () => (closed += 1) }));
     pressKey("Escape");
     expect(closed).toBe(1);
+  });
+});
+
+describe("Modal stacked dismiss", () => {
+  function openDropdown(): void {
+    const view = Dropdown({
+      label: "Language",
+      options: [
+        { value: "vi", label: "VI" },
+        { value: "en", label: "EN" },
+      ],
+      value: "vi",
+      onSelect: vi.fn(),
+    });
+    document.body.append(view.el);
+    view.el.querySelector<HTMLButtonElement>(".dropdown-trigger")?.click();
+  }
+
+  function pressScrim(overlay: HTMLElement): void {
+    overlay.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+    overlay.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  }
+
+  it("keeps modal open when scrim click also dismisses dropdown", () => {
+    const overlay = Modal({ titleKey: "setting", body: document.createElement("div") });
+    document.body.append(overlay);
+    openDropdown();
+    expect(document.body.querySelector(".dropdown-menu")).not.toBeNull();
+    pressScrim(overlay);
+    expect(document.body.querySelector(".dropdown-menu")).toBeNull();
+    expect(overlay.isConnected).toBe(true);
+    pressScrim(overlay);
+    expect(overlay.isConnected).toBe(false);
+  });
+
+  it("keeps modal open when Escape dismisses dropdown", () => {
+    const overlay = Modal({ titleKey: "setting", body: document.createElement("div") });
+    document.body.append(overlay);
+    openDropdown();
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
+    expect(document.body.querySelector(".dropdown-menu")).toBeNull();
+    expect(overlay.isConnected).toBe(true);
+    pressKey("Escape");
+    expect(overlay.isConnected).toBe(false);
   });
 });

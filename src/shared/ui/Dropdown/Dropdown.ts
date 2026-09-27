@@ -227,6 +227,9 @@ export function Dropdown<T extends string>({ label, options, value, onSelect }: 
       }
       if (event.key === "Escape") {
         event.preventDefault();
+        // Consume Escape so layers below (e.g. Modal) don't dismiss
+        // in the same keypress. One gesture dismisses one layer.
+        event.stopPropagation();
         close(true);
         return;
       }

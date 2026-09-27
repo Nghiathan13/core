@@ -65,8 +65,21 @@ export function Modal({ titleKey, body, onClose }: ModalOptions): HTMLElement {
     }
   }
 
+  // Stacked dismiss: a popup above the modal (e.g. a Dropdown menu
+  // portaled to body) closes itself on pointerdown first. That same gesture
+  // must not also dismiss the modal, so the following click is consumed.
+  // Every click is preceded by a pointerdown that recomputes the flag,
+  // so it can never go stale. One gesture dismisses one layer.
+  let consumeNextOverlayClick = false;
+  overlay.addEventListener("pointerdown", (event) => {
+    consumeNextOverlayClick = event.target === overlay && document.querySelector(".dropdown-menu") !== null;
+  });
   overlay.addEventListener("click", (event) => {
     if (event.target === overlay) {
+      if (consumeNextOverlayClick) {
+        consumeNextOverlayClick = false;
+        return;
+      }
       close();
     }
   });
