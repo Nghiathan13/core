@@ -1,7 +1,6 @@
 export { Button } from "./Button";
 export { Dropdown } from "./Dropdown";
 export type { DropdownOption, DropdownView } from "./Dropdown";
-export { LanguageSwitcher } from "./LanguageSwitcher";
 export { Modal } from "./Modal";
 export { TabButton } from "./TabButton";
 export { ThemeSwitcher } from "./ThemeSwitcher";

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { getLanguage, getLanguageMode, setLanguage } from "../../i18n";
+import { getLanguage, getLanguageMode, setLanguage } from "@/shared/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 afterEach(() => {

@@ -1,7 +1,7 @@
-import { getLanguageMode, setLanguageMode, t } from "../../i18n";
-import type { LanguageMode } from "../../i18n";
-import type { View } from "../../lib";
-import { Dropdown } from "../Dropdown";
+import { getLanguageMode, setLanguageMode, t } from "@/shared/i18n";
+import type { LanguageMode } from "@/shared/i18n";
+import type { View } from "@/shared/lib";
+import { Dropdown } from "@/shared/ui";
 import "./LanguageSwitcher.css";
 
 const LANGUAGES: { code: LanguageMode; label: string }[] = [
