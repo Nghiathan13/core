@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
+    "docs:gen": "bash script/generate-frontend-architecture.sh",
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
