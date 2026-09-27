@@ -8,7 +8,7 @@
   background: var(--tooltip-background);
   color: var(--foreground);
   font-size: var(--text-xs);
-  line-height: var(--text-xs--line-height);
+  line-height: var(--leading-xs);
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-sm);
   white-space: nowrap;

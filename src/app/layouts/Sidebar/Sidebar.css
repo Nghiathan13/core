@@ -43,13 +43,13 @@ body[data-sidebar="collapsed"] .sidebar-header .button {
   transition: left var(--duration-short) var(--easing-standard);
 }
 
-body.resizing .sidebar-resize-handle {
-  transition: none;
-}
-
 .sidebar-resize-handle:focus-visible {
   outline: var(--focus-ring-width) solid var(--ring);
   outline-offset: -2px;
+}
+
+body.resizing .sidebar-resize-handle {
+  transition: none;
 }
 
 .sidebar-content {

@@ -23,7 +23,7 @@
 .settings-section-header {
   margin: 0 0 16px;
   font-size: var(--text-lg);
-  line-height: var(--text-lg--line-height);
+  line-height: var(--leading-lg);
 }
 
 .settings-modal-content > section + section {

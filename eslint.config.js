@@ -1,5 +1,6 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import tsParser from "@typescript-eslint/parser";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
 import prettierConfig from "eslint-config-prettier";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -23,10 +24,10 @@ export default [
   },
   ...compat.extends("@feature-sliced").map((config) => ({
     ...config,
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ["**/*.ts"],
   })),
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ["**/*.ts"],
     languageOptions: {
       parser: tsParser,
       ecmaVersion: "latest",
@@ -45,7 +46,7 @@ export default [
     // FSD v2.1 allows custom shared segments (e.g. i18n) that the beta
     // @feature-sliced config does not know. Extend its allow list instead
     // of replacing it, so upstream updates keep flowing through.
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ["**/*.ts"],
     rules: {
       "import/no-internal-modules": [
         publicApiLevel,
@@ -53,6 +54,11 @@ export default [
       ],
     },
   },
+  // TypeScript-specific rules (strict, no type-checking required).
+  ...tsPlugin.configs["flat/strict"].map((config) => ({
+    ...config,
+    files: ["**/*.ts"],
+  })),
   // Turn off stylistic rules that conflict with Prettier (must stay last).
   prettierConfig,
 ];

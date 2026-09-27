@@ -6,5 +6,5 @@
 .theme-switcher-title {
   margin: 0 0 8px;
   font-size: var(--text-md);
-  line-height: var(--text-md--line-height);
+  line-height: var(--leading-md);
 }

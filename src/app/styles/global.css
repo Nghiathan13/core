@@ -1,14 +1,13 @@
-@import "./reset.css";
-@import "./tokens.css";
-@import "./motion.css";
-@import "./state-layer.css";
-@import "./layout.css";
+@import url("./reset.css");
+@import url("./tokens.css");
+@import url("./motion.css");
+@import url("./state-layer.css");
+@import url("./layout.css");
 
 :root {
   font-family: system-ui, sans-serif;
-
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -17,15 +16,15 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-size: var(--text-sm);
-  line-height: var(--text-sm--line-height);
+  line-height: var(--leading-sm);
 }
 
 h1 {
   font-size: var(--text-xl);
-  line-height: var(--text-xl--line-height);
+  line-height: var(--leading-xl);
 }
 
 h2 {
   font-size: var(--text-md);
-  line-height: var(--text-md--line-height);
+  line-height: var(--leading-md);
 }
