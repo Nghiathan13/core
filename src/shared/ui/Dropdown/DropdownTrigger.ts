@@ -19,7 +19,7 @@ export interface DropdownTriggerInstance<T extends string> {
   focus: () => void;
 }
 
-export function resolveDisplay<T extends string>(
+function resolveDisplay<T extends string>(
   option: DropdownOption<T> | undefined,
 ): { text: string; i18nKey?: string } {
   if (!option) {

@@ -1,8 +1,9 @@
 export const DEFAULT_WIDTH = 253;
 export const MIN_WIDTH = 200;
-export const MAX_RATIO = 0.4;
 export const COLLAPSED_WIDTH = 53;
-export const SNAP_WIDTH = 100;
+
+const SNAP_WIDTH = 100;
+const MAX_RATIO = 0.4;
 
 export function maxWidth(viewportWidth: number): number {
   return viewportWidth * MAX_RATIO;

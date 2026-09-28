@@ -18,6 +18,7 @@
 - [ ] `pnpm format:check` passes
 - [ ] `pnpm lint` and `pnpm lint:css` pass
 - [ ] `pnpm check:fsd` passes
+- [ ] `pnpm lint:knip` passes
 - [ ] `pnpm coverage` passes (100% threshold for `lib` & `i18n`)
 - [ ] `pnpm build` passes
 - [ ] `pnpm docs:gen` was run (if folder structure changed)
