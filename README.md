@@ -1,4 +1,4 @@
-# math
+# core
 
 App built with Tauri 2 + Vanilla TypeScript + Vite.
 
