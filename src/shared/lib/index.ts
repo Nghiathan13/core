@@ -7,6 +7,20 @@ export {
 } from "./list-navigation";
 export type { NavigableKey } from "./list-navigation";
 export {
+  BASE_TIERS,
+  acquireOverlay,
+  dismissTopOverlay,
+  getActiveOverlaysCount,
+  hasActiveOverlaysAbove,
+  releaseOverlay,
+  resetStackingForTesting,
+} from "./overlay";
+export type {
+  OverlayHandle,
+  OverlayRegistration,
+  OverlayTier,
+} from "./overlay";
+export {
   computeArrowOffset,
   computeDropdownPosition,
   computePlacement,

@@ -1,6 +1,7 @@
 import { Check, createElement } from "lucide";
 import { t } from "../../i18n";
 import {
+  acquireOverlay,
   computeDropdownPosition,
   getNextActiveIndex,
   isNavigationKey,
@@ -36,8 +37,14 @@ export function DropdownMenu<T extends string>({
 }: DropdownMenuParams<T>): DropdownMenuInstance<T> {
   let activeIndex = -1;
 
+  const overlayHandle = acquireOverlay({
+    tier: "dropdown",
+    onDismiss: () => onClose(true),
+  });
+
   const menu = document.createElement("div");
   menu.className = "dropdown-menu";
+  menu.style.zIndex = String(overlayHandle.zIndex);
   menu.setAttribute("role", "listbox");
   menu.setAttribute("aria-label", label);
 
@@ -156,6 +163,7 @@ export function DropdownMenu<T extends string>({
   window.addEventListener("resize", place);
 
   const destroy = (): void => {
+    overlayHandle.release();
     document.removeEventListener("pointerdown", onPointerDown);
     document.removeEventListener("keydown", onKeyDown);
     window.removeEventListener("scroll", place, true);
