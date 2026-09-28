@@ -99,6 +99,9 @@ jobs:
       - name: Check FSD architecture
         run: pnpm check:fsd
 
+      - name: Check unused code and dependencies (Knip)
+        run: pnpm lint:knip
+
       - name: Test with coverage (100% thresholds)
         run: pnpm coverage
 
