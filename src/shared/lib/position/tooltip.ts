@@ -1,143 +1,125 @@
+import {
+  autoUpdate,
+  computePosition,
+  flip,
+  offset,
+  shift,
+  arrow,
+} from "@floating-ui/dom";
+
 export type TooltipPlacement = "top" | "bottom" | "left" | "right";
 
-export interface TooltipRect {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+export interface TooltipPositionOptions {
+  gap?: number;
+  padding?: number;
 }
 
-export interface TooltipSize {
-  width: number;
-  height: number;
-}
-
-export interface TooltipViewport {
-  width: number;
-  height: number;
-}
-
-export interface PlacedTooltip {
+export interface TooltipPositionResult {
   x: number;
   y: number;
   placement: TooltipPlacement;
+  arrowX?: number;
+  arrowY?: number;
+}
+
+export interface TooltipPositionController {
+  reposition: () => Promise<TooltipPositionResult>;
+  destroy: () => void;
 }
 
 export const TOOLTIP_MARGIN = 8;
 export const TOOLTIP_GAP = 8;
 export const TOOLTIP_ARROW_SIZE = 8;
 
-const OPPOSITE: Record<TooltipPlacement, TooltipPlacement> = {
-  top: "bottom",
-  bottom: "top",
-  left: "right",
-  right: "left",
-};
-
-const FALLBACK_ORDER: TooltipPlacement[] = ["top", "bottom", "left", "right"];
-
-function candidate(
-  rect: TooltipRect,
-  size: TooltipSize,
+/**
+ * Computes and applies floating position for a tooltip and its arrow relative to trigger
+ * using Floating UI collision detection and alignment.
+ */
+export async function computeTooltipPosition(
+  trigger: HTMLElement,
+  tip: HTMLElement,
+  arrowEl: HTMLElement,
   placement: TooltipPlacement,
-): { x: number; y: number } {
-  switch (placement) {
-    case "top":
-      return {
-        x: rect.x + (rect.width - size.width) / 2,
-        y: rect.y - size.height - TOOLTIP_GAP,
-      };
-    case "bottom":
-      return {
-        x: rect.x + (rect.width - size.width) / 2,
-        y: rect.y + rect.height + TOOLTIP_GAP,
-      };
-    case "left":
-      return {
-        x: rect.x - size.width - TOOLTIP_GAP,
-        y: rect.y + (rect.height - size.height) / 2,
-      };
-    case "right":
-      return {
-        x: rect.x + rect.width + TOOLTIP_GAP,
-        y: rect.y + (rect.height - size.height) / 2,
-      };
-  }
-}
+  options?: TooltipPositionOptions,
+): Promise<TooltipPositionResult> {
+  const gap = options?.gap ?? TOOLTIP_GAP;
+  const padding = options?.padding ?? TOOLTIP_MARGIN;
 
-function axisFits(
-  x: number,
-  y: number,
-  size: TooltipSize,
-  viewport: TooltipViewport,
-  placement: TooltipPlacement,
-): boolean {
-  if (placement === "top" || placement === "bottom") {
-    return (
-      y >= TOOLTIP_MARGIN && y + size.height <= viewport.height - TOOLTIP_MARGIN
-    );
-  }
-  return (
-    x >= TOOLTIP_MARGIN && x + size.width <= viewport.width - TOOLTIP_MARGIN
-  );
-}
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), Math.max(min, max));
-}
-
-function shiftCrossAxis(
-  x: number,
-  y: number,
-  size: TooltipSize,
-  viewport: TooltipViewport,
-  placement: TooltipPlacement,
-): { x: number; y: number } {
-  if (placement === "top" || placement === "bottom") {
-    return {
-      x: clamp(x, TOOLTIP_MARGIN, viewport.width - size.width - TOOLTIP_MARGIN),
-      y,
-    };
-  }
-  return {
+  const {
     x,
-    y: clamp(y, TOOLTIP_MARGIN, viewport.height - size.height - TOOLTIP_MARGIN),
+    y,
+    placement: finalPlacement,
+    middlewareData,
+  } = await computePosition(trigger, tip, {
+    placement,
+    middleware: [
+      offset(gap),
+      flip({ fallbackPlacements: ["top", "bottom", "left", "right"] }),
+      shift({ padding }),
+      arrow({ element: arrowEl, padding: 4 }),
+    ],
+  });
+
+  const roundedX = Math.round(x);
+  const roundedY = Math.round(y);
+  tip.style.left = `${roundedX}px`;
+  tip.style.top = `${roundedY}px`;
+  tip.dataset.placement = finalPlacement;
+
+  const arrowData = middlewareData.arrow;
+  const arrowX = arrowData?.x != null ? Math.round(arrowData.x) : undefined;
+  const arrowY = arrowData?.y != null ? Math.round(arrowData.y) : undefined;
+
+  if (finalPlacement === "top" || finalPlacement === "bottom") {
+    arrowEl.style.left = `${arrowX}px`;
+    arrowEl.style.top = "";
+  } else {
+    arrowEl.style.top = `${arrowY}px`;
+    arrowEl.style.left = "";
+  }
+
+  return {
+    x: roundedX,
+    y: roundedY,
+    placement: finalPlacement as TooltipPlacement,
+    arrowX,
+    arrowY,
   };
 }
 
-export function computeArrowOffset(
-  triggerCenter: number,
-  tipStart: number,
-  tipSize: number,
-): number {
-  const half = TOOLTIP_ARROW_SIZE / 2;
-  return clamp(triggerCenter - tipStart, half + 2, tipSize - half - 2);
-}
+/**
+ * Binds autoUpdate lifecycle to reposition tooltip and its arrow on scroll, resize,
+ * and element layout shifts.
+ */
+export function setupTooltipPosition(
+  trigger: HTMLElement,
+  tip: HTMLElement,
+  arrowEl: HTMLElement,
+  getPlacement: () => TooltipPlacement,
+  options?: TooltipPositionOptions,
+): TooltipPositionController {
+  const initialPlacement = getPlacement();
+  tip.dataset.placement = initialPlacement;
 
-export function computePlacement(
-  rect: TooltipRect,
-  size: TooltipSize,
-  viewport: TooltipViewport,
-  preferred: TooltipPlacement,
-): PlacedTooltip {
-  const order = [
-    preferred,
-    OPPOSITE[preferred],
-    ...FALLBACK_ORDER.filter(
-      (item) => item !== preferred && item !== OPPOSITE[preferred],
-    ),
-  ];
-  for (const placement of order) {
-    const { x, y } = candidate(rect, size, placement);
-    if (axisFits(x, y, size, viewport, placement)) {
-      const shifted = shiftCrossAxis(x, y, size, viewport, placement);
-      return { x: shifted.x, y: shifted.y, placement };
-    }
+  // Immediate synchronous fallback so arrow is never rendered without positioning
+  const half = TOOLTIP_ARROW_SIZE / 2;
+  if (initialPlacement === "top" || initialPlacement === "bottom") {
+    arrowEl.style.left = `calc(50% - ${half}px)`;
+    arrowEl.style.top = "";
+  } else {
+    arrowEl.style.top = `calc(50% - ${half}px)`;
+    arrowEl.style.left = "";
   }
-  const { x, y } = candidate(rect, size, preferred);
+
+  const reposition = (): Promise<TooltipPositionResult> =>
+    computeTooltipPosition(trigger, tip, arrowEl, getPlacement(), options);
+
+  const cleanup = autoUpdate(trigger, tip, () => {
+    void reposition();
+  });
+
   return {
-    x: clamp(x, TOOLTIP_MARGIN, viewport.width - size.width - TOOLTIP_MARGIN),
-    y: clamp(y, TOOLTIP_MARGIN, viewport.height - size.height - TOOLTIP_MARGIN),
-    placement: preferred,
+    reposition,
+    destroy: cleanup,
   };
 }

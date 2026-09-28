@@ -1,112 +1,164 @@
 import { describe, expect, it } from "vitest";
-import { computeArrowOffset, computePlacement } from "./tooltip";
-import type { TooltipSize, TooltipViewport } from "./tooltip";
+import {
+  TOOLTIP_ARROW_SIZE,
+  TOOLTIP_GAP,
+  TOOLTIP_MARGIN,
+  computeTooltipPosition,
+  setupTooltipPosition,
+} from "./tooltip";
 
-const VIEWPORT: TooltipViewport = { width: 1000, height: 800 };
-const SIZE: TooltipSize = { width: 100, height: 40 };
+describe("tooltip position", () => {
+  function createFixture(): {
+    trigger: HTMLButtonElement;
+    tip: HTMLDivElement;
+    arrowEl: HTMLDivElement;
+  } {
+    const trigger = document.createElement("button");
+    const tip = document.createElement("div");
+    const arrowEl = document.createElement("div");
+    tip.append(arrowEl);
+    document.body.append(trigger, tip);
 
-describe("computePlacement", () => {
-  it("places on preferred side when it fits", () => {
-    const placed = computePlacement(
-      { x: 400, y: 400, width: 50, height: 30 },
-      SIZE,
-      VIEWPORT,
-      "top",
-    );
-    expect(placed.placement).toBe("top");
-    expect(placed.x).toBe(400 + (50 - 100) / 2);
-    expect(placed.y).toBe(400 - 40 - 8);
+    trigger.getBoundingClientRect = () => ({
+      x: 100,
+      y: 100,
+      width: 80,
+      height: 32,
+      top: 100,
+      bottom: 132,
+      left: 100,
+      right: 180,
+      toJSON: () => {},
+    });
+    tip.getBoundingClientRect = () => ({
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 24,
+      top: 0,
+      bottom: 24,
+      left: 0,
+      right: 100,
+      toJSON: () => {},
+    });
+    arrowEl.getBoundingClientRect = () => ({
+      x: 0,
+      y: 0,
+      width: 8,
+      height: 8,
+      top: 0,
+      bottom: 8,
+      left: 0,
+      right: 8,
+      toJSON: () => {},
+    });
+
+    return { trigger, tip, arrowEl };
+  }
+
+  it("computes position for top placement with horizontal arrow offset", async () => {
+    const { trigger, tip, arrowEl } = createFixture();
+
+    const result = await computeTooltipPosition(trigger, tip, arrowEl, "top");
+    expect(result.placement).toBe("top");
+    expect(tip.style.left).toBe(`${result.x}px`);
+    expect(tip.style.top).toBe(`${result.y}px`);
+    expect(tip.dataset.placement).toBe("top");
+    expect(arrowEl.style.left).not.toBe("");
+    expect(arrowEl.style.top).toBe("");
+
+    trigger.remove();
+    tip.remove();
   });
 
-  it("places right of trigger", () => {
-    const placed = computePlacement(
-      { x: 100, y: 400, width: 50, height: 30 },
-      SIZE,
-      VIEWPORT,
-      "right",
-    );
-    expect(placed.placement).toBe("right");
-    expect(placed.x).toBe(150 + 8);
-    expect(placed.y).toBe(400 + (30 - 40) / 2);
-  });
+  it("computes position for bottom placement with horizontal arrow offset", async () => {
+    const { trigger, tip, arrowEl } = createFixture();
 
-  it("places left of trigger", () => {
-    const placed = computePlacement(
-      { x: 500, y: 400, width: 50, height: 30 },
-      SIZE,
-      VIEWPORT,
-      "left",
-    );
-    expect(placed.placement).toBe("left");
-    expect(placed.x).toBe(500 - 100 - 8);
-    expect(placed.y).toBe(400 + (30 - 40) / 2);
-  });
-
-  it("flips to opposite side when preferred overflows", () => {
-    const placed = computePlacement(
-      { x: 400, y: 10, width: 50, height: 30 },
-      SIZE,
-      VIEWPORT,
-      "top",
-    );
-    expect(placed.placement).toBe("bottom");
-    expect(placed.y).toBe(40 + 8);
-  });
-
-  it("keeps 8px margin from viewport edge", () => {
-    const placed = computePlacement(
-      { x: 0, y: 400, width: 50, height: 30 },
-      SIZE,
-      VIEWPORT,
-      "top",
-    );
-    expect(placed.x).toBeGreaterThanOrEqual(8);
-  });
-
-  it("shifts into viewport instead of flipping when only cross axis overflows", () => {
-    const placed = computePlacement(
-      { x: 8, y: 100, width: 36, height: 36 },
-      SIZE,
-      VIEWPORT,
+    const result = await computeTooltipPosition(
+      trigger,
+      tip,
+      arrowEl,
       "bottom",
+      { gap: 10, padding: 12 },
     );
-    expect(placed.placement).toBe("bottom");
-    expect(placed.x).toBe(8);
-    expect(placed.y).toBe(136 + 8);
+    expect(result.placement).toBe("bottom");
+    expect(result.x).toBeDefined();
+    expect(result.y).toBeDefined();
+    expect(tip.dataset.placement).toBe("bottom");
+    expect(arrowEl.style.left).not.toBe("");
+    expect(arrowEl.style.top).toBe("");
+
+    trigger.remove();
+    tip.remove();
   });
 
-  it("shifts cross axis into viewport for left/right placement", () => {
-    const placed = computePlacement(
-      { x: 500, y: 4, width: 50, height: 20 },
-      SIZE,
-      VIEWPORT,
-      "left",
+  it("computes position for left placement with vertical arrow offset", async () => {
+    const { trigger, tip, arrowEl } = createFixture();
+
+    const result = await computeTooltipPosition(trigger, tip, arrowEl, "left");
+    expect(result.placement).toBe("left");
+    expect(arrowEl.style.top).not.toBe("");
+    expect(arrowEl.style.left).toBe("");
+
+    trigger.remove();
+    tip.remove();
+  });
+
+  it("computes position for right placement with vertical arrow offset", async () => {
+    const { trigger, tip, arrowEl } = createFixture();
+
+    const result = await computeTooltipPosition(trigger, tip, arrowEl, "right");
+    expect(result.placement).toBe("right");
+    expect(arrowEl.style.top).not.toBe("");
+    expect(arrowEl.style.left).toBe("");
+
+    trigger.remove();
+    tip.remove();
+  });
+
+  it("setupTooltipPosition sets initial synchronous styles for top/bottom", async () => {
+    const { trigger, tip, arrowEl } = createFixture();
+
+    const controller = setupTooltipPosition(
+      trigger,
+      tip,
+      arrowEl,
+      () => "bottom",
     );
-    expect(placed.placement).toBe("left");
-    expect(placed.x).toBe(500 - 100 - 8);
-    expect(placed.y).toBe(8);
+    expect(tip.dataset.placement).toBe("bottom");
+    expect(arrowEl.style.left).toContain("50%");
+    expect(arrowEl.style.top).toBe("");
+
+    const result = await controller.reposition();
+    expect(result.x).toBeDefined();
+    controller.destroy();
+
+    trigger.remove();
+    tip.remove();
   });
 
-  it("clamps into viewport when nothing fits", () => {
-    const huge: TooltipSize = { width: 2000, height: 1600 };
-    const placed = computePlacement(
-      { x: 400, y: 400, width: 50, height: 30 },
-      huge,
-      VIEWPORT,
-      "top",
+  it("setupTooltipPosition sets initial synchronous styles for left/right", async () => {
+    const { trigger, tip, arrowEl } = createFixture();
+
+    const controller = setupTooltipPosition(
+      trigger,
+      tip,
+      arrowEl,
+      () => "left",
     );
-    expect(placed.x).toBeGreaterThanOrEqual(8);
-    expect(placed.y).toBeGreaterThanOrEqual(8);
-  });
-});
+    expect(tip.dataset.placement).toBe("left");
+    expect(arrowEl.style.top).toContain("50%");
+    expect(arrowEl.style.left).toBe("");
 
-describe("computeArrowOffset", () => {
-  it("centers arrow on trigger", () => {
-    expect(computeArrowOffset(200, 150, 100)).toBe(50);
+    controller.destroy();
+
+    trigger.remove();
+    tip.remove();
   });
 
-  it("clamps arrow inside tooltip bounds", () => {
-    expect(computeArrowOffset(0, 150, 100)).toBe(6);
-    expect(computeArrowOffset(500, 150, 100)).toBe(94);
+  it("exports correct default constants", () => {
+    expect(TOOLTIP_MARGIN).toBe(8);
+    expect(TOOLTIP_GAP).toBe(8);
+    expect(TOOLTIP_ARROW_SIZE).toBe(8);
   });
 });

@@ -21,26 +21,25 @@ export type {
   OverlayTier,
 } from "./overlay";
 export {
-  computeArrowOffset,
   computeDropdownPosition,
-  computePlacement,
+  computeTooltipPosition,
   DEFAULT_MENU_WIDTH,
   MENU_GAP,
+  setupDropdownPosition,
+  setupTooltipPosition,
   TOOLTIP_ARROW_SIZE,
   TOOLTIP_GAP,
   TOOLTIP_MARGIN,
   VIEWPORT_MARGIN,
 } from "./position";
 export type {
-  DropdownPosition,
-  DropdownRect,
-  DropdownSize,
-  DropdownViewport,
-  PlacedTooltip,
+  DropdownPositionController,
+  DropdownPositionOptions,
+  DropdownPositionResult,
   TooltipPlacement,
-  TooltipRect,
-  TooltipSize,
-  TooltipViewport,
+  TooltipPositionController,
+  TooltipPositionOptions,
+  TooltipPositionResult,
 } from "./position";
 export { getThemeMode, initTheme, setThemeMode } from "./theme";
 export type { ThemeMode } from "./theme";

@@ -2,10 +2,10 @@ import { Check, createElement } from "lucide";
 import { t } from "../../i18n";
 import {
   acquireOverlay,
-  computeDropdownPosition,
   getNextActiveIndex,
   isNavigationKey,
   isSelectKey,
+  setupDropdownPosition,
 } from "../../lib";
 import type { DropdownOption } from "./types";
 
@@ -81,19 +81,7 @@ export function DropdownMenu<T extends string>({
 
   document.body.append(menu);
 
-  const place = (): void => {
-    const rect = trigger.getBoundingClientRect();
-    const size = menu.getBoundingClientRect();
-    const pos = computeDropdownPosition(rect, size, {
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-    menu.style.left = `${pos.x}px`;
-    menu.style.top = `${pos.y}px`;
-    menu.style.minWidth = `${pos.minWidth}px`;
-  };
-
-  place();
+  const positionController = setupDropdownPosition(trigger, menu);
 
   const focusOption = (index: number): void => {
     activeIndex = index;
@@ -159,15 +147,12 @@ export function DropdownMenu<T extends string>({
 
   document.addEventListener("pointerdown", onPointerDown);
   document.addEventListener("keydown", onKeyDown);
-  window.addEventListener("scroll", place, true);
-  window.addEventListener("resize", place);
 
   const destroy = (): void => {
+    positionController.destroy();
     overlayHandle.release();
     document.removeEventListener("pointerdown", onPointerDown);
     document.removeEventListener("keydown", onKeyDown);
-    window.removeEventListener("scroll", place, true);
-    window.removeEventListener("resize", place);
     menu.remove();
   };
 
@@ -181,7 +166,9 @@ export function DropdownMenu<T extends string>({
         );
       });
     },
-    reposition: place,
+    reposition: () => {
+      void positionController.reposition();
+    },
     destroy,
   };
 }
