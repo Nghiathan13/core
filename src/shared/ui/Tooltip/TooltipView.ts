@@ -1,9 +1,4 @@
-import {
-  acquireOverlay,
-  computeArrowOffset,
-  computePlacement,
-  TOOLTIP_ARROW_SIZE,
-} from "../../lib";
+import { acquireOverlay, setupTooltipPosition } from "../../lib";
 import type { TooltipPlacement } from "./types";
 
 let tooltipId = 0;
@@ -51,48 +46,20 @@ export function TooltipView({
   trigger.setAttribute("aria-describedby", tip.id);
   document.body.append(tip);
 
-  const place = (): void => {
-    const rect = trigger.getBoundingClientRect();
-    const size = tip.getBoundingClientRect();
-    const placed = computePlacement(
-      { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
-      { width: size.width, height: size.height },
-      { width: window.innerWidth, height: window.innerHeight },
-      getPlacement(),
-    );
-
-    tip.style.left = `${placed.x}px`;
-    tip.style.top = `${placed.y}px`;
-    tip.dataset.placement = placed.placement;
-
-    const half = TOOLTIP_ARROW_SIZE / 2;
-    if (placed.placement === "top" || placed.placement === "bottom") {
-      const offset = computeArrowOffset(
-        rect.x + rect.width / 2,
-        placed.x,
-        size.width,
-      );
-      arrow.style.left = `${offset - half}px`;
-      arrow.style.top = "";
-    } else {
-      const offset = computeArrowOffset(
-        rect.y + rect.height / 2,
-        placed.y,
-        size.height,
-      );
-      arrow.style.top = `${offset - half}px`;
-      arrow.style.left = "";
-    }
-  };
-
-  place();
+  const positionController = setupTooltipPosition(
+    trigger,
+    tip,
+    arrow,
+    getPlacement,
+  );
 
   const setText = (nextText: string): void => {
     label.textContent = nextText;
-    place();
+    void positionController.reposition();
   };
 
   const destroy = (): void => {
+    positionController.destroy();
     overlayHandle.release();
     tip.remove();
     trigger.removeAttribute("aria-describedby");
@@ -100,7 +67,9 @@ export function TooltipView({
 
   return {
     el: tip,
-    place,
+    place: () => {
+      void positionController.reposition();
+    },
     setText,
     destroy,
   };

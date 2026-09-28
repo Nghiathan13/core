@@ -1,27 +1,26 @@
 export {
   computeDropdownPosition,
+  setupDropdownPosition,
   DEFAULT_MENU_WIDTH,
   MENU_GAP,
   VIEWPORT_MARGIN,
 } from "./dropdown";
 export type {
-  DropdownPosition,
-  DropdownRect,
-  DropdownSize,
-  DropdownViewport,
+  DropdownPositionController,
+  DropdownPositionOptions,
+  DropdownPositionResult,
 } from "./dropdown";
 
 export {
-  computeArrowOffset,
-  computePlacement,
+  computeTooltipPosition,
+  setupTooltipPosition,
   TOOLTIP_ARROW_SIZE,
   TOOLTIP_GAP,
   TOOLTIP_MARGIN,
 } from "./tooltip";
 export type {
-  PlacedTooltip,
   TooltipPlacement,
-  TooltipRect,
-  TooltipSize,
-  TooltipViewport,
+  TooltipPositionController,
+  TooltipPositionOptions,
+  TooltipPositionResult,
 } from "./tooltip";
