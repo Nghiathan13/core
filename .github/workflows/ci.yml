@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+jobs:
+  commitlint:
+    name: Commit message
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Check PR title
+        if: github.event_name == 'pull_request'
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        if: github.event_name == 'push'
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        if: github.event_name == 'push'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        if: github.event_name == 'push'
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint push commits
+        if: github.event_name == 'push'
+        run: |
+          if [[ "${{ github.event.before }}" =~ ^0+$ ]]; then
+            pnpm exec commitlint --from HEAD~1 --to HEAD --verbose
+          else
+            pnpm exec commitlint --from ${{ github.event.before }} --to ${{ github.sha }} --verbose
+          fi
+
+  frontend:
+    name: Frontend checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check docs are up to date
+        run: |
+          pnpm docs:gen
+          git diff --exit-code -- docs/architecture-frontend.md
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Lint (ESLint + FSD boundaries)
+        run: pnpm lint
+
+      - name: Lint styles
+        run: pnpm lint:css
+
+      - name: Check FSD architecture
+        run: pnpm check:fsd
+
+      - name: Test with coverage (100% thresholds)
+        run: pnpm coverage
+
+      - name: Build (tsc + vite)
+        run: pnpm build

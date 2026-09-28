@@ -2,6 +2,7 @@
 # Generate the frontend architecture doc (overview + folder-only tree).
 # Usage: bash script/generate-frontend-architecture.sh
 set -euo pipefail
+export LC_ALL=C
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
