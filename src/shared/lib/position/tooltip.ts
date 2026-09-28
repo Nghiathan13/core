@@ -51,10 +51,14 @@ export async function computeTooltipPosition(
     placement: finalPlacement,
     middlewareData,
   } = await computePosition(trigger, tip, {
+    strategy: "fixed",
     placement,
     middleware: [
       offset(gap),
-      flip({ fallbackPlacements: ["top", "bottom", "left", "right"] }),
+      flip({
+        fallbackAxisSideDirection: "none",
+        crossAxis: false,
+      }),
       shift({ padding }),
       arrow({ element: arrowEl, padding: 4 }),
     ],
