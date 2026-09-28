@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { strictAxe } from "@/test-setup";
 import { Button } from "./Button";
 
 describe("Button popup", () => {
@@ -16,5 +17,12 @@ describe("Button popup", () => {
     const button = Button({ label: "setting" });
     expect(button.hasAttribute("aria-haspopup")).toBe(false);
     expect(button.hasAttribute("aria-expanded")).toBe(false);
+  });
+
+  it("has no accessibility violations", async () => {
+    const button = Button({ label: "Settings" });
+    document.body.append(button);
+    expect(await strictAxe(button)).toHaveNoViolations();
+    button.remove();
   });
 });
