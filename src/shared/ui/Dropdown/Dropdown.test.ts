@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { strictAxe } from "@/test-setup";
 import { Dropdown } from "./Dropdown";
 
 afterEach(() => {
@@ -122,5 +123,29 @@ describe("Dropdown", () => {
     expect(document.body.querySelector(".dropdown-menu")).not.toBeNull();
     view.destroy?.();
     expect(document.body.querySelector(".dropdown-menu")).toBeNull();
+  });
+
+  it("has no accessibility violations when closed and open", async () => {
+    const { onSelect } = setup();
+    const view = Dropdown({
+      label: "Language",
+      options: [
+        { value: "vi", label: "Tiếng Việt" },
+        { value: "en", label: "English" },
+      ],
+      value: "vi",
+      onSelect,
+    });
+    document.body.append(view.el);
+    expect(await strictAxe(view.el)).toHaveNoViolations();
+
+    view.el.querySelector<HTMLButtonElement>(".dropdown-trigger")?.click();
+    const menu = document.body.querySelector<HTMLElement>(".dropdown-menu");
+    expect(menu).not.toBeNull();
+    if (menu) {
+      expect(await strictAxe(menu)).toHaveNoViolations();
+    }
+
+    view.destroy?.();
   });
 });

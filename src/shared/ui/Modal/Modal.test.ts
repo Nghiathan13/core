@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { strictAxe } from "@/test-setup";
 import { Dropdown } from "../Dropdown";
 import { Modal } from "./Modal";
 
@@ -133,5 +134,15 @@ describe("Modal stacked dismiss", () => {
     expect(overlay.isConnected).toBe(true);
     pressKey("Escape");
     expect(overlay.isConnected).toBe(false);
+  });
+
+  it("has no accessibility violations", async () => {
+    const overlay = Modal({
+      titleKey: "setting",
+      body: document.createElement("div"),
+    });
+    document.body.append(overlay);
+    expect(await strictAxe(overlay)).toHaveNoViolations();
+    pressKey("Escape");
   });
 });
