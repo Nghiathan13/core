@@ -3,5 +3,4 @@ export {
   TOOLTIP_SHOW_DELAY,
   attachTooltip,
 } from "./Tooltip";
-export type { TooltipHandle } from "./Tooltip";
-export type { TooltipPlacement } from "./position";
+export type { TooltipHandle, TooltipOptions, TooltipPlacement } from "./types";

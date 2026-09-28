@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { computeArrowOffset, computePlacement } from "./position";
-import type { TooltipSize, TooltipViewport } from "./position";
+import { computeArrowOffset, computePlacement } from "./tooltip";
+import type { TooltipSize, TooltipViewport } from "./tooltip";
 
 const VIEWPORT: TooltipViewport = { width: 1000, height: 800 };
 const SIZE: TooltipSize = { width: 100, height: 40 };
@@ -27,6 +27,18 @@ describe("computePlacement", () => {
     );
     expect(placed.placement).toBe("right");
     expect(placed.x).toBe(150 + 8);
+    expect(placed.y).toBe(400 + (30 - 40) / 2);
+  });
+
+  it("places left of trigger", () => {
+    const placed = computePlacement(
+      { x: 500, y: 400, width: 50, height: 30 },
+      SIZE,
+      VIEWPORT,
+      "left",
+    );
+    expect(placed.placement).toBe("left");
+    expect(placed.x).toBe(500 - 100 - 8);
     expect(placed.y).toBe(400 + (30 - 40) / 2);
   });
 
@@ -61,6 +73,18 @@ describe("computePlacement", () => {
     expect(placed.placement).toBe("bottom");
     expect(placed.x).toBe(8);
     expect(placed.y).toBe(136 + 8);
+  });
+
+  it("shifts cross axis into viewport for left/right placement", () => {
+    const placed = computePlacement(
+      { x: 500, y: 4, width: 50, height: 20 },
+      SIZE,
+      VIEWPORT,
+      "left",
+    );
+    expect(placed.placement).toBe("left");
+    expect(placed.x).toBe(500 - 100 - 8);
+    expect(placed.y).toBe(8);
   });
 
   it("clamps into viewport when nothing fits", () => {

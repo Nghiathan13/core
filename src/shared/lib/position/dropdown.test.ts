@@ -4,7 +4,7 @@ import {
   MENU_GAP,
   VIEWPORT_MARGIN,
   computeDropdownPosition,
-} from "./dropdown-position";
+} from "./dropdown";
 
 describe("computeDropdownPosition", () => {
   const defaultViewport = { width: 1000, height: 800 };
