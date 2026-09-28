@@ -1,59 +1,30 @@
 import "./Tooltip.css";
 import {
-  TOOLTIP_ARROW_SIZE,
-  computeArrowOffset,
-  computePlacement,
-} from "./position";
-import type { TooltipPlacement } from "./position";
+  activateSession,
+  clearActiveSession,
+  isWithinGracePeriod,
+  recordHide,
+  TOOLTIP_GRACE_PERIOD,
+  TOOLTIP_SHOW_DELAY,
+} from "./TooltipSession";
+import { TooltipView } from "./TooltipView";
+import type { TooltipViewInstance } from "./TooltipView";
+import type {
+  TooltipHandle,
+  TooltipOptions,
+  TooltipPlacement,
+  TooltipSession,
+} from "./types";
 
-interface TooltipOptions {
-  text: string | (() => string);
-  placement?: TooltipPlacement | (() => TooltipPlacement);
-  delay?: number;
-}
-
-export interface TooltipHandle {
-  detach: () => void;
-  refresh: () => void;
-  show: () => void;
-}
-
-export const TOOLTIP_SHOW_DELAY = 200;
-export const TOOLTIP_GRACE_PERIOD = 400;
-
-interface TooltipSession {
-  place: () => void;
-  hide: () => void;
-}
-
-let lastHideAt = 0;
-let active: TooltipSession | null = null;
-let globalsBound = false;
-
-let tooltipId = 0;
-
-function bindGlobals(): void {
-  if (globalsBound) {
-    return;
-  }
-  globalsBound = true;
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      active?.hide();
-    }
-  });
-  window.addEventListener("scroll", () => active?.place(), true);
-  window.addEventListener("resize", () => active?.place());
-}
+export { TOOLTIP_GRACE_PERIOD, TOOLTIP_SHOW_DELAY };
+export type { TooltipHandle };
 
 export function attachTooltip(
   trigger: HTMLElement,
   options: TooltipOptions,
 ): TooltipHandle {
   const delay = options.delay ?? TOOLTIP_SHOW_DELAY;
-  let tip: HTMLElement | null = null;
-  let label: HTMLElement | null = null;
-  let arrow: HTMLElement | null = null;
+  let view: TooltipViewInstance | null = null;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let pressed = false;
 
@@ -65,66 +36,25 @@ export function attachTooltip(
       ? options.placement()
       : (options.placement ?? "top");
 
-  const place = (): void => {
-    if (!tip || !arrow || !label) {
-      return;
-    }
-    const rect = trigger.getBoundingClientRect();
-    const size = tip.getBoundingClientRect();
-    const placed = computePlacement(
-      { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
-      { width: size.width, height: size.height },
-      { width: window.innerWidth, height: window.innerHeight },
-      resolvePlacement(),
-    );
-    tip.style.left = `${placed.x}px`;
-    tip.style.top = `${placed.y}px`;
-    tip.dataset.placement = placed.placement;
-    const half = TOOLTIP_ARROW_SIZE / 2;
-    if (placed.placement === "top" || placed.placement === "bottom") {
-      const offset = computeArrowOffset(
-        rect.x + rect.width / 2,
-        placed.x,
-        size.width,
-      );
-      arrow.style.left = `${offset - half}px`;
-      arrow.style.top = "";
-    } else {
-      const offset = computeArrowOffset(
-        rect.y + rect.height / 2,
-        placed.y,
-        size.height,
-      );
-      arrow.style.top = `${offset - half}px`;
-      arrow.style.left = "";
-    }
+  const session: TooltipSession = {
+    place: () => view?.place(),
+    hide: () => hide(),
   };
 
   const show = (): void => {
-    if (tip) {
+    if (view) {
       return;
     }
     const text = resolveText();
     if (text === "") {
       return;
     }
-    bindGlobals();
-    active?.hide();
-    tooltipId += 1;
-    tip = document.createElement("div");
-    tip.className = "tooltip";
-    tip.setAttribute("role", "tooltip");
-    tip.id = `tooltip-${tooltipId}`;
-    label = document.createElement("span");
-    label.textContent = text;
-    arrow = document.createElement("div");
-    arrow.className = "tooltip-arrow";
-    arrow.setAttribute("aria-hidden", "true");
-    tip.append(label, arrow);
-    trigger.setAttribute("aria-describedby", tip.id);
-    document.body.append(tip);
-    active = { place, hide };
-    place();
+    activateSession(session);
+    view = TooltipView({
+      trigger,
+      text,
+      getPlacement: resolvePlacement,
+    });
   };
 
   const hide = (): void => {
@@ -132,21 +62,16 @@ export function attachTooltip(
       clearTimeout(timer);
       timer = undefined;
     }
-    if (tip) {
-      lastHideAt = Date.now();
+    if (view) {
+      recordHide();
+      view.destroy();
+      view = null;
     }
-    if (active?.hide === hide) {
-      active = null;
-    }
-    tip?.remove();
-    tip = null;
-    label = null;
-    arrow = null;
-    trigger.removeAttribute("aria-describedby");
+    clearActiveSession(session);
   };
 
   const refresh = (): void => {
-    if (!tip || !label) {
+    if (!view) {
       return;
     }
     const text = resolveText();
@@ -154,16 +79,14 @@ export function attachTooltip(
       hide();
       return;
     }
-    label.textContent = text;
-    place();
+    view.setText(text);
   };
 
   const schedule = (): void => {
-    if (tip || timer !== undefined) {
+    if (view || timer !== undefined) {
       return;
     }
-    const elapsed = Date.now() - lastHideAt;
-    if (elapsed >= 0 && elapsed < TOOLTIP_GRACE_PERIOD) {
+    if (isWithinGracePeriod()) {
       show();
       return;
     }
