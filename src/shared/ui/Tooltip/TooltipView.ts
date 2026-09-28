@@ -1,4 +1,5 @@
 import {
+  acquireOverlay,
   computeArrowOffset,
   computePlacement,
   TOOLTIP_ARROW_SIZE,
@@ -31,6 +32,13 @@ export function TooltipView({
   tip.className = "tooltip";
   tip.setAttribute("role", "tooltip");
   tip.id = `tooltip-${tooltipId}`;
+
+  const overlayHandle = acquireOverlay({
+    id: tip.id,
+    tier: "tooltip",
+    onDismiss: () => destroy(),
+  });
+  tip.style.zIndex = String(overlayHandle.zIndex);
 
   const label = document.createElement("span");
   label.textContent = text;
@@ -85,6 +93,7 @@ export function TooltipView({
   };
 
   const destroy = (): void => {
+    overlayHandle.release();
     tip.remove();
     trigger.removeAttribute("aria-describedby");
   };

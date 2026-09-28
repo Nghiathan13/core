@@ -1,4 +1,5 @@
 import { t } from "../../i18n";
+import { acquireOverlay } from "../../lib";
 import "./Modal.css";
 
 interface ModalOptions {
@@ -10,6 +11,12 @@ interface ModalOptions {
 export function Modal({ titleKey, body, onClose }: ModalOptions): HTMLElement {
   const overlay = document.createElement("div");
   overlay.className = "modal-overlay";
+
+  const overlayHandle = acquireOverlay({
+    tier: "modal",
+    onDismiss: close,
+  });
+  overlay.style.zIndex = String(overlayHandle.zIndex);
 
   const dialog = document.createElement("div");
   dialog.className = "modal";
@@ -39,6 +46,7 @@ export function Modal({ titleKey, body, onClose }: ModalOptions): HTMLElement {
   }
 
   function close(): void {
+    overlayHandle.release();
     window.removeEventListener("keydown", onKey);
     overlay.remove();
     if (previousFocus?.isConnected) {
@@ -78,8 +86,7 @@ export function Modal({ titleKey, body, onClose }: ModalOptions): HTMLElement {
   let consumeNextOverlayClick = false;
   overlay.addEventListener("pointerdown", (event) => {
     consumeNextOverlayClick =
-      event.target === overlay &&
-      document.querySelector(".dropdown-menu") !== null;
+      event.target === overlay && overlayHandle.hasOverlaysAbove();
   });
   overlay.addEventListener("click", (event) => {
     if (event.target === overlay) {

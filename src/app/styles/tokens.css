@@ -21,9 +21,6 @@
   --text-xl: 24px;
   --leading-xl: calc(var(--text-xl) * var(--leading-ratio));
   --modal-max-width: 800px;
-  --z-modal: 1000;
-  --z-dropdown: 1100;
-  --z-tooltip: 1200;
   --border: color-mix(in srgb, var(--foreground) 20%, var(--background));
   --ring: var(--foreground);
   --foreground-muted: color-mix(
